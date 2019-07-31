@@ -47,7 +47,6 @@ describe('Play Later', function() {
     users.login('celebrimor@publicationAndLibrary.com');
     libraryPage.get();
     libraryPage.addToPlaylist();
-
   });
 
 
