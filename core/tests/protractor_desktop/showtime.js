@@ -31,25 +31,22 @@ describe('Play Later', function() {
   });
 
   it('should display private and published explorations', function() {
-
     var EXPLORATION_FRACTION = 'fraction';
     var CATEGORY_ARCHITECTURE = 'Architecture';
     var LANGUAGE_ENGLISH = 'English';
 
     users.createUser(
-        'feanor@publicationAndLibrary.com', 'feanorPublicationAndLibrary');
+      'feanor@publicationAndLibrary.com', 'feanorPublicationAndLibrary');
 
     users.login('feanor@publicationAndLibrary.com');
     workflow.createAndPublishExploration(
-        EXPLORATION_FRACTION, CATEGORY_ARCHITECTURE,
-        'hold the light of the two trees', LANGUAGE_ENGLISH);
+      EXPLORATION_FRACTION, CATEGORY_ARCHITECTURE,
+      'hold the light of the two trees', LANGUAGE_ENGLISH);
     users.createUser(
-        'celebrimor@publicationAndLibrary.com', 'celebriorPublicationAndLibrary');
+      'celebrimor@publicationAndLibrary.com', 'celebriorPublicationAndLibrary');
     users.login('celebrimor@publicationAndLibrary.com');
-
-
-});
-afterEach(function() {
-    general.checkForConsoleErrors([])
-})
+  });
+  afterEach(function() {
+    general.checkForConsoleErrors([]);
+  });
 });
