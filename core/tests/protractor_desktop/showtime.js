@@ -45,7 +45,12 @@ describe('Play Later', function() {
     users.createUser(
       'celebrimor@publicationAndLibrary.com', 'celebriorPublicationAndLibrary');
     users.login('celebrimor@publicationAndLibrary.com');
+    libraryPage.get();
+    libraryPage.addToPlaylist();
+
   });
+
+
   afterEach(function() {
     general.checkForConsoleErrors([]);
   });

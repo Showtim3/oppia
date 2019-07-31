@@ -29,6 +29,8 @@ var LearnerDashboardPage = function() {
     element(by.css('.protractor-test-feedback-section'));
   var feedbackThread =
     element(by.css('.protractor-test-feedback-thread'));
+  var playLaterSection =
+      element(by.css('.protractor-test-play-later-section'));
   var completedCollectionsSection =
     element(by.css('.protractor-test-completed-collection-section'));
   var completedExplorationsSection =
@@ -86,6 +88,12 @@ var LearnerDashboardPage = function() {
       completedCollectionsSection,
       'Completed Collection Section tab takes too long to be clickable');
     completedCollectionsSection.click();
+  };
+  this.navigateToPlayLaterExplorationSection = function() {
+    waitFor.elementToBeClickable(
+      playLaterSection,
+      'Play Later Collection Section tab takes too long to be clickable');
+    playLaterSection.click();
   };
 
   this.navigateToCompletedExplorationsSection = function() {

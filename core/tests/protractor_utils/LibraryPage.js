@@ -48,6 +48,9 @@ var LibraryPage = function() {
     by.css('.protractor-test-search-input'));
   var mainHeader = element(by.css('.protractor-test-library-main-header'));
 
+  var addToPlaylistButton = element.all(
+    by.css('.protractor-test-add-to-playlist-btn')
+  );
   // Returns a promise of all explorations with the given name.
   var _getExplorationElements = function(name) {
     return element.all(by.css('.protractor-test-exp-summary-tile')).filter(
@@ -73,6 +76,13 @@ var LibraryPage = function() {
     searchInput.clear();
     searchInput.sendKeys(searchQuery);
   };
+
+  this.addToPlaylist = function() {
+    waitFor.elementToBeClickable(addToPlaylistButton,
+      'Add to playlist Icon taking too long to load');
+    addToPlaylistButton.click();
+  };
+
 
   this.get = function() {
     browser.get(LIBRARY_URL_SUFFIX);
