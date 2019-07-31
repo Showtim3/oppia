@@ -24,13 +24,13 @@ var workflow = require('../protractor_utils/workflow.js');
 var LibraryPage = require('../protractor_utils/LibraryPage.js');
 
 describe('Play Later', function() {
-var libraryPage = null;
+  var libraryPage = null;
 
-beforeEach(function() {
+  beforeEach(function() {
     libraryPage = new LibraryPage.LibraryPage();
-});
+  });
 
-it('should display private and published explorations', function() {
+  it('should display private and published explorations', function() {
 
     var EXPLORATION_FRACTION = 'fraction';
     var CATEGORY_ARCHITECTURE = 'Architecture';
