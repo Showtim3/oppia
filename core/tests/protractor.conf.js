@@ -16,6 +16,9 @@ var suites = {
     accessibility: [
       'protractor/accessibility.js'
     ],
+    showtime: [
+        'protractor_desktop/showtime.js'
+    ],
 
     additionalEditorAndPlayerFeatures: [
       'protractor_desktop/additionalEditorAndPlayerFeatures.js'
