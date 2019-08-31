@@ -88,23 +88,16 @@ def _revert_changes_in_package_lock_file():
         ValueError if any git command fails.
     """
 
-    git_unstage_cmd = ['git', 'reset', '--', 'package-lock.json']
     git_revert_cmd = ['git', 'checkout', '--', 'package-lock.json']
 
-    _, err_unstage_cmd = (
-        _start_subprocess_for_result(git_unstage_cmd))
+    _, err_revert_cmd = (
+        _start_subprocess_for_result(git_revert_cmd))
 
-    if not err_unstage_cmd:
-        _, err_revert_cmd = (
-            _start_subprocess_for_result(git_revert_cmd))
-
-        if not err_revert_cmd:
-            python_utils.PRINT(
-                'Changes to package-lock.json successfully reverted!')
-        else:
-            raise ValueError(err_revert_cmd)
+    if not err_revert_cmd:
+       python_utils.PRINT(
+            'Changes to package-lock.json successfully reverted!')
     else:
-        raise ValueError(err_unstage_cmd)
+        raise ValueError(err_revert_cmd)
 
 
 def _does_diff_include_package_lock_file_and_no_package_file():
@@ -131,18 +124,18 @@ def _does_diff_include_package_lock_file_and_no_package_file():
 
 
 def main():
-    """Main method for pre-commit hook that checks files added/modified
+    """Main method for post-checkout hook that checks files added/modified
     in a commit.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--install', action='store_true', default=False,
-                        help='Install pre_commit_hook to the .git/hooks dir')
+                        help='Install post_checkout_hook to the .git/hooks dir')
     args = parser.parse_args()
     if args.install:
         _install_hook()
         sys.exit(0)
 
-    python_utils.PRINT('Running pre-commit check for package-lock.json ...')
+    python_utils.PRINT('Running post-checkout check for package-lock.json ...')
     if _does_diff_include_package_lock_file_and_no_package_file():
         python_utils.PRINT(
             'This commit only changes package-lock.json without '
