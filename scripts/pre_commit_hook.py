@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Dummy comment"""
 """Pre-commit hook that checks files added/modified in a commit.
 
 To install the hook manually simply execute this script from the oppia root dir
