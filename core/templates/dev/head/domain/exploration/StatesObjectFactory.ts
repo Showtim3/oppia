@@ -17,41 +17,57 @@
  * domain objects given a list of backend state dictionaries.
  */
 
+import { downgradeInjectable } from '@angular/upgrade/static';
+
 require('domain/state/StateObjectFactory.ts');
 
-angular.module('oppia').factory('StatesObjectFactory', [
-  'StateObjectFactory', 'INTERACTION_SPECS',
-  function(StateObjectFactory, INTERACTION_SPECS) {
-    var States = function(states) {
+const INTERACTION_SPECS = require('interactions/interaction_specs.json');
+
+class StateObject {
+    _states;
+
+    constructor(states: any,) {
       this._states = states;
-    };
-    States.prototype.getState = function(stateName) {
+    }
+
+    States(states) {
+      this._states = states;
+    }
+
+    getState(stateName) {
       return angular.copy(this._states[stateName]);
-    };
+    }
 
     // TODO(tjiang11): Remove getStateObjects() and replace calls
     // with an object to represent data to be manipulated inside
     // ExplorationDiffService.
 
-    States.prototype.getStateObjects = function() {
+    getStateObjects() {
       return angular.copy(this._states);
-    };
-    States.prototype.addState = function(newStateName) {
-      this._states[newStateName] = StateObjectFactory.createDefaultState(
-        newStateName);
-    };
-    States.prototype.setState = function(stateName, stateData) {
+    }
+
+    createDefaultState(newStateName) {
+      return new this.States(newStateName);
+    }
+
+    addState(newStateName) {
+      this._states[newStateName] = new StateObject(newStateName);
+    }
+
+    setState(stateName, stateData) {
       this._states[stateName] = angular.copy(stateData);
-    };
-    States.prototype.hasState = function(stateName) {
+    }
+
+    hasState(stateName) {
       return this._states.hasOwnProperty(stateName);
-    };
-    States.prototype.deleteState = function(deleteStateName) {
+    }
+
+    deleteState(deleteStateName) {
       delete this._states[deleteStateName];
-      for (var otherStateName in this._states) {
-        var interaction = this._states[otherStateName].interaction;
-        var groups = interaction.answerGroups;
-        for (var i = 0; i < groups.length; i++) {
+      for (let otherStateName in this._states) {
+        let interaction = this._states[otherStateName].interaction;
+        let groups = interaction.answerGroups;
+        for (let i = 0; i < groups.length; i++) {
           if (groups[i].outcome.dest === deleteStateName) {
             groups[i].outcome.dest = otherStateName;
           }
@@ -62,16 +78,17 @@ angular.module('oppia').factory('StatesObjectFactory', [
           }
         }
       }
-    };
-    States.prototype.renameState = function(oldStateName, newStateName) {
+    }
+
+    renameState(oldStateName, newStateName) {
       this._states[newStateName] = angular.copy(this._states[oldStateName]);
       this._states[newStateName].setName(newStateName);
       delete this._states[oldStateName];
 
-      for (var otherStateName in this._states) {
-        var interaction = this._states[otherStateName].interaction;
-        var groups = interaction.answerGroups;
-        for (var i = 0; i < groups.length; i++) {
+      for (let otherStateName in this._states) {
+        let interaction = this._states[otherStateName].interaction;
+        let groups = interaction.answerGroups;
+        for (let i = 0; i < groups.length; i++) {
           if (groups[i].outcome.dest === oldStateName) {
             groups[i].outcome.dest = newStateName;
           }
@@ -82,28 +99,30 @@ angular.module('oppia').factory('StatesObjectFactory', [
           }
         }
       }
-    };
-    States.prototype.getStateNames = function() {
+    }
+
+    getStateNames() {
       return Object.keys(this._states);
-    };
-    States.prototype.getFinalStateNames = function() {
-      var finalStateNames = [];
-      for (var stateName in this._states) {
-        var interaction = this._states[stateName].interaction;
+    }
+
+    getFinalStateNames() {
+      let finalStateNames = [];
+      for (let stateName in this._states) {
+        let interaction = this._states[stateName].interaction;
         if (interaction.id && INTERACTION_SPECS[interaction.id].is_terminal) {
           finalStateNames.push(stateName);
         }
       }
       return finalStateNames;
-    };
+    }
 
-    States.prototype.getAllVoiceoverLanguageCodes = function() {
-      var allAudioLanguageCodes = [];
-      for (var stateName in this._states) {
-        var state = this._states[stateName];
-        var contentIdsList = state.recordedVoiceovers.getAllContentId();
+    getAllVoiceoverLanguageCodes() {
+      let allAudioLanguageCodes = [];
+      for (let stateName in this._states) {
+        let state = this._states[stateName];
+        let contentIdsList = state.recordedVoiceovers.getAllContentId();
         contentIdsList.forEach(function(contentId) {
-          var audioLanguageCodes = (
+          let audioLanguageCodes = (
             state.recordedVoiceovers.getVoiceoverLanguageCodes(contentId));
           audioLanguageCodes.forEach(function(languageCode) {
             if (allAudioLanguageCodes.indexOf(languageCode) === -1) {
@@ -113,16 +132,16 @@ angular.module('oppia').factory('StatesObjectFactory', [
         });
       }
       return allAudioLanguageCodes;
-    };
+    }
 
-    States.prototype.getAllVoiceovers = function(languageCode) {
-      var allAudioTranslations = {};
-      for (var stateName in this._states) {
-        var state = this._states[stateName];
+    getAllVoiceovers(languageCode) {
+      let allAudioTranslations = {};
+      for (let stateName in this._states) {
+        let state = this._states[stateName];
         allAudioTranslations[stateName] = [];
-        var contentIdsList = state.recordedVoiceovers.getAllContentId();
+        let contentIdsList = state.recordedVoiceovers.getAllContentId();
         contentIdsList.forEach(function(contentId) {
-          var audioTranslations = (
+          let audioTranslations = (
             state.recordedVoiceovers.getBindableVoiceovers(contentId));
           if (audioTranslations.hasOwnProperty(languageCode)) {
             allAudioTranslations[stateName].push(
@@ -131,20 +150,22 @@ angular.module('oppia').factory('StatesObjectFactory', [
         });
       }
       return allAudioTranslations;
-    };
+    }
+}
 
-    // TODO(ankita240796): Remove the bracket notation once Angular2 gets in.
-    /* eslint-disable dot-notation */
-    States['createFromBackendDict'] = function(statesBackendDict) {
-    /* eslint-enable dot-notation */
-      var stateObjectsDict = {};
-      for (var stateName in statesBackendDict) {
-        stateObjectsDict[stateName] = StateObjectFactory.createFromBackendDict(
-          stateName, statesBackendDict[stateName]);
-      }
-      return new States(stateObjectsDict);
-    };
 
-    return States;
+export class StatesObjectFactory {
+  createFromBackendDict(statesBackendDict: Object) {
+    let stateObjectsDict = {};
+    for (let stateName in statesBackendDict) {
+      stateObjectsDict[stateName] = new StateObject(
+        statesBackendDict[stateName]);
+    }
+    return stateObjectsDict;
   }
-]);
+}
+
+angular.module('oppia').factory(
+  'StatesObjectFactory',
+  downgradeInjectable(StatesObjectFactory));
+

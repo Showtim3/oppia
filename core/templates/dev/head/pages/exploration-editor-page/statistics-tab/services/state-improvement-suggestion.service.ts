@@ -16,58 +16,64 @@
  * @fileoverview Service for suggestion improvements to a specific state.
  */
 
-require(
-  'pages/exploration-editor-page/exploration-editor-page.constants.ajs.ts');
+import { downgradeInjectable } from '@angular/upgrade/static';
+import { Injectable } from '@angular/core';
+import { ExplorationEditorPageConstants } from
+  'pages/exploration-editor-page/exploration-editor-page.constants';
 
-angular.module('oppia').factory('StateImprovementSuggestionService', [
-  'IMPROVE_TYPE_INCOMPLETE',
-  function(IMPROVE_TYPE_INCOMPLETE) {
-    return {
-      // Returns an array of suggested improvements to states. Each suggestion
-      // is an object with the keys: rank, improveType, and stateName.
-      getStateImprovements: function(explorationStates, allStateStats) {
-        var rankComparator = function(lhs, rhs) {
-          return rhs.rank - lhs.rank;
-        };
 
-        var rankedStates = [];
-        explorationStates.getStateNames().forEach(function(stateName) {
-          if (!allStateStats.hasOwnProperty(stateName)) {
-            return;
-          }
-
-          var stateStats = allStateStats[stateName];
-          var totalEntryCount = stateStats.total_entry_count;
-          var noAnswerSubmittedCount = stateStats.no_submitted_answer_count;
-
-          if (totalEntryCount === 0) {
-            return;
-          }
-
-          var threshold = 0.2 * totalEntryCount;
-          var eligibleFlags = [];
-          var state = explorationStates.getState(stateName);
-          var stateInteraction = state.interaction;
-          if (noAnswerSubmittedCount > threshold) {
-            eligibleFlags.push({
-              rank: noAnswerSubmittedCount,
-              improveType: IMPROVE_TYPE_INCOMPLETE,
-            });
-          }
-          if (eligibleFlags.length > 0) {
-            eligibleFlags.sort(rankComparator);
-            rankedStates.push({
-              rank: eligibleFlags[0].rank,
-              stateName: stateName,
-              type: eligibleFlags[0].improveType,
-            });
-          }
-        });
-
-        // The returned suggestions are sorted decreasingly by their ranks.
-        rankedStates.sort(rankComparator);
-        return rankedStates;
-      }
+@Injectable({
+  providedIn: 'root'
+})
+export class StateImprovementSuggestionService {
+  // Returns an array of suggested improvements to states. Each suggestion
+  // is an object with the keys: rank, improveType, and stateName.
+  getStateImprovements(explorationStates, allStateStats) {
+    let rankComparator = function(lhs, rhs) {
+      return rhs.rank - lhs.rank;
     };
+
+    let rankedStates = [];
+    explorationStates.getStateNames().forEach(function(stateName) {
+      if (!allStateStats.hasOwnProperty(stateName)) {
+        return;
+      }
+
+      let stateStats = allStateStats[stateName];
+      let totalEntryCount = stateStats.total_entry_count;
+      let noAnswerSubmittedCount = stateStats.no_submitted_answer_count;
+
+      if (totalEntryCount === 0) {
+        return;
+      }
+
+      let threshold = 0.2 * totalEntryCount;
+      let eligibleFlags = [];
+      let state = explorationStates.getState(stateName);
+      let stateInteraction = state.interaction;
+      if (noAnswerSubmittedCount > threshold) {
+        eligibleFlags.push({
+          rank: noAnswerSubmittedCount,
+          improveType: ExplorationEditorPageConstants.IMPROVE_TYPE_INCOMPLETE,
+        });
+      }
+      if (eligibleFlags.length > 0) {
+        eligibleFlags.sort(rankComparator);
+        rankedStates.push({
+          rank: eligibleFlags[0].rank,
+          stateName: stateName,
+          type: eligibleFlags[0].improveType,
+        });
+      }
+    });
+
+    // The returned suggestions are sorted decreasingly by their ranks.
+    rankedStates.sort(rankComparator);
+    return rankedStates;
   }
-]);
+}
+
+angular.module('oppia').factory(
+  'StateImprovementSuggestionService',
+  downgradeInjectable(StateImprovementSuggestionService));
+
