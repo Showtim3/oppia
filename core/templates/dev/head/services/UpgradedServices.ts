@@ -151,6 +151,7 @@ export class AppModule {
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
+    var httpDependency =  HTTPCLIENT;
     // var httpClient = new HttpClient(new class extends HttpHandler {
     //   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
     //     return undefined;
@@ -167,7 +168,7 @@ export class UpgradedServices {
     upgradedServices['CamelCaseToHyphensPipe'] = new CamelCaseToHyphensPipe();
     upgradedServices['ClassifierObjectFactory'] = new ClassifierObjectFactory();
     upgradedServices['ComputeGraphService'] = new ComputeGraphService();
-    upgradedServices['CsrfTokenService'] = new CsrfTokenService(HTTPCLIENT);
+    upgradedServices['CsrfTokenService'] = new CsrfTokenService(httpDependency);
     upgradedServices['DateTimeFormatService'] = new DateTimeFormatService();
     upgradedServices['DebouncerService'] = new DebouncerService();
     upgradedServices['EditabilityService'] = new EditabilityService();
