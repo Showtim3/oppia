@@ -131,19 +131,10 @@ import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
 
 import {Injector} from '@angular/core';
-import {HttpClient, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {HttpClient} from '@angular/common/http';
 
 export let InjectorInstance: Injector;
 let HTTPCLIENT: HttpClient;
-
-export class AppModule {
-  constructor(private injector: Injector, private httpClient: HttpClient) {
-    InjectorInstance = this.injector;
-    HTTPCLIENT = this.httpClient;
-  }
-}
-
 
 @Injectable({
   providedIn: 'root'
@@ -151,7 +142,13 @@ export class AppModule {
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
-    var httpDependency =  HTTPCLIENT;
+    var a = class AppModule {
+      constructor(private injector: Injector, private httpClient: HttpClient) {
+        InjectorInstance = this.injector;
+        HTTPCLIENT = this.httpClient;
+      }
+    };
+    var httpDependency = HTTPCLIENT;
     // var httpClient = new HttpClient(new class extends HttpHandler {
     //   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
     //     return undefined;
