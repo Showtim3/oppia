@@ -17,7 +17,7 @@
  */
 
 import { downgradeInjectable } from '@angular/upgrade/static';
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 
 import { AlertsService } from 'services/alerts.service';
 import { AngularNameService } from
@@ -129,12 +129,25 @@ import { WrittenTranslationObjectFactory } from
 import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
 
+import {Injector} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+
+export let InjectorInstance: Injector;
+
+export class AppModule {
+  constructor(private injector: Injector) {
+    InjectorInstance = this.injector;
+  }
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
+    var httpClient = InjectorInstance.get<HttpClient>(HttpClient);
     /* eslint-disable dot-notation */
 
     // Group 1: Services without dependencies.
