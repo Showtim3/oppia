@@ -135,10 +135,12 @@ import {HttpClient, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/h
 import {Observable} from "rxjs";
 
 export let InjectorInstance: Injector;
+let HTTPCLIENT: HttpClient;
 
 export class AppModule {
-  constructor(private injector: Injector) {
+  constructor(private injector: Injector, private httpClient: HttpClient) {
     InjectorInstance = this.injector;
+    HTTPCLIENT = this.httpClient;
   }
 }
 
@@ -149,11 +151,11 @@ export class AppModule {
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
-    var httpClient = new HttpClient(new class extends HttpHandler {
-      handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
-        return undefined;
-      }
-    });
+    // var httpClient = new HttpClient(new class extends HttpHandler {
+    //   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+    //     return undefined;
+    //   }
+    // });
     // var httpClient = InjectorInstance.get<HttpClient>(HttpClient);
     /* eslint-disable dot-notation */
 
@@ -165,7 +167,7 @@ export class UpgradedServices {
     upgradedServices['CamelCaseToHyphensPipe'] = new CamelCaseToHyphensPipe();
     upgradedServices['ClassifierObjectFactory'] = new ClassifierObjectFactory();
     upgradedServices['ComputeGraphService'] = new ComputeGraphService();
-    upgradedServices['CsrfTokenService'] = new CsrfTokenService(httpClient);
+    upgradedServices['CsrfTokenService'] = new CsrfTokenService(HTTPCLIENT);
     upgradedServices['DateTimeFormatService'] = new DateTimeFormatService();
     upgradedServices['DebouncerService'] = new DebouncerService();
     upgradedServices['EditabilityService'] = new EditabilityService();
