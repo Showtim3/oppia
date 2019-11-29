@@ -36,6 +36,7 @@ import { ChangesInHumanReadableFormService } from
 import { ClassifierObjectFactory } from
   'domain/classifier/ClassifierObjectFactory';
 import { ComputeGraphService } from 'services/compute-graph.service';
+import { CsrfTokenService } from 'services/csrf-token.service';
 import { DateTimeFormatService } from 'services/date-time-format.service';
 import { DebouncerService } from 'services/debouncer.service';
 import { DeviceInfoService } from 'services/contextual/device-info.service';
@@ -158,6 +159,7 @@ export class UpgradedServices {
     upgradedServices['CamelCaseToHyphensPipe'] = new CamelCaseToHyphensPipe();
     upgradedServices['ClassifierObjectFactory'] = new ClassifierObjectFactory();
     upgradedServices['ComputeGraphService'] = new ComputeGraphService();
+    upgradedServices['CsrfTokenService'] = new CsrfTokenService();
     upgradedServices['DateTimeFormatService'] = new DateTimeFormatService();
     upgradedServices['DebouncerService'] = new DebouncerService();
     upgradedServices['EditabilityService'] = new EditabilityService();
