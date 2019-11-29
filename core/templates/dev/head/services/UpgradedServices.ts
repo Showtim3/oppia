@@ -131,7 +131,8 @@ import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
 
 import {Injector} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
+import {Observable} from "rxjs";
 
 export let InjectorInstance: Injector;
 
@@ -148,7 +149,12 @@ export class AppModule {
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
-    var httpClient = InjectorInstance.get<HttpClient>(HttpClient);
+    var httpClient = new HttpClient(new class extends HttpHandler {
+      handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+        return undefined;
+      }
+    });
+    // var httpClient = InjectorInstance.get<HttpClient>(HttpClient);
     /* eslint-disable dot-notation */
 
     // Group 1: Services without dependencies.
