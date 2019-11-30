@@ -17,7 +17,7 @@
  */
 
 import { downgradeInjectable } from '@angular/upgrade/static';
-import { Injectable } from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 
 import { AlertsService } from 'services/alerts.service';
 import { AngularNameService } from
@@ -128,6 +128,8 @@ import { WrittenTranslationObjectFactory } from
   'domain/exploration/WrittenTranslationObjectFactory';
 import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
+import {HttpClient} from '@angular/common/http';
+import {ReadOnlyExplorationBackendApiService} from '../domain/exploration/read-only-exploration-backend-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -135,6 +137,12 @@ import { WrittenTranslationsObjectFactory } from
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
+    var httpDependency;
+    var a = class AppModule {
+      constructor(private httpClient: HttpClient) {
+        httpDependency = this.httpClient;
+      }
+    };
     /* eslint-disable dot-notation */
 
     // Group 1: Services without dependencies.
@@ -241,6 +249,9 @@ export class UpgradedServices {
         upgradedServices['WrittenTranslationObjectFactory']);
 
     // Group 3: Services depending only on groups 1-2.
+    upgradedServices['ReadOnlyExplorationBackendApiService'] =
+        new ReadOnlyExplorationBackendApiService(httpDependency,
+          upgradedServices['UrlInterpolationService']);
     upgradedServices['AnswerGroupObjectFactory'] =
       new AnswerGroupObjectFactory(
         upgradedServices['OutcomeObjectFactory'],
