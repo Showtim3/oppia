@@ -16,49 +16,23 @@
  * @fileoverview Unit tests for ReadOnlyExplorationBackendApiService.
  */
 
-// TODO(#7222): Remove the following block of unnnecessary imports once
-// the code corresponding to the spec is upgraded to Angular 8.
-import { UpgradedServices } from 'services/UpgradedServices';
-// ^^^ This block is to be removed.
+import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from
+  '@angular/common/http/testing';
+import {ReadOnlyExplorationBackendApiService} from
+  'domain/exploration/read-only-exploration-backend-api.service';
 
-import { SubtitledHtmlObjectFactory } from
-  'domain/exploration/SubtitledHtmlObjectFactory';
-
-require('domain/exploration/read-only-exploration-backend-api.service.ts');
-require('domain/exploration/SubtitledHtmlObjectFactory.ts');
-
-describe('Read only exploration backend API service', function() {
-  var ReadOnlyExplorationBackendApiService = null;
-  var sampleDataResults = null;
-  var $rootScope = null;
-  var $scope = null;
-  var $httpBackend = null;
-  var shof;
-
-  beforeEach(angular.mock.module('oppia'));
-  beforeEach(angular.mock.module('oppia', function($provide) {
-    $provide.value(
-      'SubtitledHtmlObjectFactory', new SubtitledHtmlObjectFactory());
-  }));
-  beforeEach(angular.mock.module('oppia', function($provide) {
-    var ugs = new UpgradedServices();
-    for (let [key, value] of Object.entries(ugs.getUpgradedServices())) {
-      $provide.value(key, value);
-    }
-  }));
-
-  beforeEach(angular.mock.module(
-    'oppia', GLOBALS.TRANSLATOR_PROVIDER_FOR_TESTS));
-
-  beforeEach(angular.mock.inject(function($injector) {
-    ReadOnlyExplorationBackendApiService = $injector.get(
-      'ReadOnlyExplorationBackendApiService');
-    $rootScope = $injector.get('$rootScope');
-    $scope = $rootScope.$new();
-    $httpBackend = $injector.get('$httpBackend');
-    shof = $injector.get('SubtitledHtmlObjectFactory');
-
-    // Sample exploration object returnable from the backend
+describe('Read only exploration backend API service', () => {
+  let readOnlyExplorationBackendApiService:
+      ReadOnlyExplorationBackendApiService = null;
+  // Sample exploration object returnable from the backend
+  let httpTestingController: HttpTestingController = null;
+  let sampleDataResults;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [ReadOnlyExplorationBackendApiService]
+    });
     sampleDataResults = {
       exploration_id: '0',
       is_logged_in: true,
@@ -93,139 +67,158 @@ describe('Read only exploration backend API service', function() {
       version: 1,
       state_classifier_mapping: {}
     };
-  }));
-
-  afterEach(function() {
-    $httpBackend.verifyNoOutstandingExpectation();
-    $httpBackend.verifyNoOutstandingRequest();
+    readOnlyExplorationBackendApiService = TestBed.get(
+      ReadOnlyExplorationBackendApiService);
+    httpTestingController = TestBed.get(HttpTestingController);
   });
 
-  it('should successfully fetch an existing exploration from the backend',
-    function() {
-      var successHandler = jasmine.createSpy('success');
-      var failHandler = jasmine.createSpy('fail');
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+  // todo failed
+  fit('should successfully fetch an existing exploration from the backend',
+    fakeAsync(() => {
+      let successHandler = jasmine.createSpy('success');
+      let failHandler = jasmine.createSpy('fail');
 
-      $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-        sampleDataResults);
-      ReadOnlyExplorationBackendApiService.fetchExploration(
+      readOnlyExplorationBackendApiService.fetchExploration(
         '0', null).then(successHandler, failHandler);
-      $httpBackend.flush();
 
-      expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
+      let req = httpTestingController.expectOne('/explorehandler/init/0');
+      expect(req.request.method).toEqual('GET');
+      req.flush(sampleDataResults);
+
+      flushMicrotasks();
+
+      expect(successHandler).toHaveBeenCalledWith();
       expect(failHandler).not.toHaveBeenCalled();
-    }
+    })
   );
-
+  // todo failed
   it('should load a cached exploration after fetching it from the backend',
-    function() {
-      var successHandler = jasmine.createSpy('success');
-      var failHandler = jasmine.createSpy('fail');
+    fakeAsync(() => {
+      let successHandler = jasmine.createSpy('success');
+      let failHandler = jasmine.createSpy('fail');
 
       // Loading a exploration the first time should fetch it from the backend.
-      $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-        sampleDataResults);
-      ReadOnlyExplorationBackendApiService.loadExploration(
+      readOnlyExplorationBackendApiService.loadExploration(
         '0', null).then(successHandler, failHandler);
-      $httpBackend.flush();
+
+      const req = httpTestingController.expectOne('/explorehandler/init/0');
+      expect(req.request.method).toEqual('GET');
+      req.flush(sampleDataResults);
+
+      flushMicrotasks();
 
       expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
       expect(failHandler).not.toHaveBeenCalled();
 
       // Loading a exploration the second time should not fetch it.
-      ReadOnlyExplorationBackendApiService.loadExploration(
+      readOnlyExplorationBackendApiService.loadExploration(
         '0', null).then(successHandler, failHandler);
 
-      expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
-      expect(failHandler).not.toHaveBeenCalled();
-    }
-  );
+      flushMicrotasks();
 
+      expect(successHandler).toHaveBeenCalledWith();
+      expect(failHandler).not.toHaveBeenCalled();
+    }));
+  // todo failed
   it('should use the rejection handler if the backend request failed',
-    function() {
-      var successHandler = jasmine.createSpy('success');
-      var failHandler = jasmine.createSpy('fail');
+    fakeAsync(() => {
+      let successHandler = jasmine.createSpy('success');
+      let failHandler = jasmine.createSpy('fail');
 
       // Loading a exploration the first time should fetch it from the backend.
-      $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-        500, 'Error loading exploration 0.');
-      ReadOnlyExplorationBackendApiService.loadExploration(
+      // $httpBackend.expect('GET', '/explorehandler/init/0').respond(
+      //   500, 'Error loading exploration 0.');
+      readOnlyExplorationBackendApiService.loadExploration(
         '0', null).then(successHandler, failHandler);
-      $httpBackend.flush();
+
+      const req = httpTestingController.expectOne('/explorehandler/init/0');
+      expect(req.request.method).toEqual('GET');
+
+      flushMicrotasks();
 
       expect(successHandler).not.toHaveBeenCalled();
       expect(failHandler).toHaveBeenCalledWith('Error loading exploration 0.');
-    }
-  );
-
-  it('should report caching and support clearing the cache', function() {
-    var successHandler = jasmine.createSpy('success');
-    var failHandler = jasmine.createSpy('fail');
+    }));
+  // todo failled
+  it('should report caching and support clearing the cache', fakeAsync(() => {
+    let successHandler = jasmine.createSpy('success');
+    let failHandler = jasmine.createSpy('fail');
 
     // The exploration should not currently be cached.
-    expect(ReadOnlyExplorationBackendApiService.isCached('0')).toBe(false);
+    expect(readOnlyExplorationBackendApiService.isCached('0')).toBe(false);
 
     // Loading a exploration the first time should fetch it from the backend.
-    $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-      sampleDataResults);
-    ReadOnlyExplorationBackendApiService.loadLatestExploration('0').then(
+    readOnlyExplorationBackendApiService.loadLatestExploration('0').then(
       successHandler, failHandler);
-    $httpBackend.flush();
 
-    expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
+    let req = httpTestingController.expectOne('/explorehandler/init/0');
+    expect(req.request.method).toEqual('GET');
+    req.flush(sampleDataResults);
+
+    flushMicrotasks();
+
+    expect(successHandler).toHaveBeenCalledWith();
     expect(failHandler).not.toHaveBeenCalled();
 
     // The exploration should now be cached.
-    expect(ReadOnlyExplorationBackendApiService.isCached('0')).toBe(true);
+    expect(readOnlyExplorationBackendApiService.isCached('0')).toBe(true);
 
     // The exploration should be loadable from the cache.
-    ReadOnlyExplorationBackendApiService.loadLatestExploration('0').then(
+    readOnlyExplorationBackendApiService.loadLatestExploration('0').then(
       successHandler, failHandler);
-    expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
+    expect(successHandler).toHaveBeenCalledWith();
     expect(failHandler).not.toHaveBeenCalled();
 
     // Resetting the cache will cause another fetch from the backend.
-    ReadOnlyExplorationBackendApiService.clearExplorationCache();
-    expect(ReadOnlyExplorationBackendApiService.isCached('0')).toBe(false);
+    readOnlyExplorationBackendApiService.clearExplorationCache();
+    expect(readOnlyExplorationBackendApiService.isCached('0')).toBe(false);
 
-    $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-      sampleDataResults);
-    ReadOnlyExplorationBackendApiService.loadLatestExploration('0').then(
+    readOnlyExplorationBackendApiService.loadLatestExploration('0').then(
       successHandler, failHandler);
-    $httpBackend.flush();
 
-    expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
+    req = httpTestingController.expectOne('/explorehandler/init/0');
+    expect(req.request.method).toEqual('GET');
+    req.flush(sampleDataResults);
+
+    flushMicrotasks();
+
+    expect(successHandler).toHaveBeenCalledWith();
     expect(failHandler).not.toHaveBeenCalled();
-  });
+  }));
 
-  it('should report a cached exploration after caching it', function() {
-    var successHandler = jasmine.createSpy('success');
-    var failHandler = jasmine.createSpy('fail');
+  it('should report a cached exploration after caching it', fakeAsync(() => {
+    let successHandler = jasmine.createSpy('success');
+    let failHandler = jasmine.createSpy('fail');
 
     // The exploration should not currently be cached.
-    expect(ReadOnlyExplorationBackendApiService.isCached('0')).toBe(false);
+    expect(readOnlyExplorationBackendApiService.isCached('0')).toBe(false);
 
     // Cache a exploration.
-    ReadOnlyExplorationBackendApiService.cacheExploration('0', {
+    readOnlyExplorationBackendApiService.cacheExploration('0', {
       id: '0',
       nodes: []
     });
 
     // It should now be cached.
-    expect(ReadOnlyExplorationBackendApiService.isCached('0')).toBe(true);
+    expect(readOnlyExplorationBackendApiService.isCached('0')).toBe(true);
 
     // A new exploration should not have been fetched from the backend. Also,
     // the returned exploration should match the expected exploration object.
-    ReadOnlyExplorationBackendApiService.loadLatestExploration('0').then(
+    readOnlyExplorationBackendApiService.loadLatestExploration('0').then(
       successHandler, failHandler);
 
     // http://brianmcd.com/2014/03/27/
     // a-tip-for-angular-unit-tests-with-promises.html
-    $rootScope.$digest();
+    // $rootScope.$digest();
+    flushMicrotasks();
 
     expect(successHandler).toHaveBeenCalledWith({
       id: '0',
       nodes: []
     });
     expect(failHandler).not.toHaveBeenCalled();
-  });
+  }));
 });

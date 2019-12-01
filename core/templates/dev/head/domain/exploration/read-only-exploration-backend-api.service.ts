@@ -47,7 +47,7 @@ export class ReadOnlyExplorationBackendApiService {
         if (successCallback) {
           successCallback(exploration);
         }
-      }, function(errorResponse) {
+      }, (errorResponse) => {
         if (errorCallback) {
           errorCallback(errorResponse.data);
         }
