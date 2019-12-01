@@ -141,8 +141,10 @@ import { WrittenTranslationObjectFactory } from
   'domain/exploration/WrittenTranslationObjectFactory';
 import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
-import {HttpClient} from '@angular/common/http';
-import {ReadOnlyExplorationBackendApiService} from '../domain/exploration/read-only-exploration-backend-api.service';
+import {HttpClient, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
+import {ReadOnlyExplorationBackendApiService} from
+  'domain/exploration/read-only-exploration-backend-api.service';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -150,13 +152,18 @@ import {ReadOnlyExplorationBackendApiService} from '../domain/exploration/read-o
 export class UpgradedServices {
   getUpgradedServices() {
     var upgradedServices = {};
-    var httpDependency;
-    var a = class AppModule {
-      constructor(private httpClient: HttpClient) {
-        httpDependency = this.httpClient;
-      }
-    };
+    // var httpDependency;
+    // var a = class AppModule {
+    //   constructor(private httpClient: HttpClient) {
+    //     httpDependency = this.httpClient;
+    //   }
+    // };
     /* eslint-disable dot-notation */
+    var httpDependency = new HttpClient(new class extends HttpHandler {
+      handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+        return undefined;
+      }
+    });
 
     // Group 1: Services without dependencies.
     upgradedServices['AngularNameService'] = new AngularNameService();

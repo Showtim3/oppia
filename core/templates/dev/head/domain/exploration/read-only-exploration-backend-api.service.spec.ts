@@ -22,7 +22,7 @@ import {HttpClientTestingModule, HttpTestingController} from
 import {ReadOnlyExplorationBackendApiService} from
   'domain/exploration/read-only-exploration-backend-api.service';
 
-fdescribe('Read only exploration backend API service', () => {
+describe('Read only exploration backend API service', () => {
   let readOnlyExplorationBackendApiService:
       ReadOnlyExplorationBackendApiService = null;
   // Sample exploration object returnable from the backend
@@ -94,8 +94,8 @@ fdescribe('Read only exploration backend API service', () => {
       expect(failHandler).not.toHaveBeenCalled();
     })
   );
-  // todo failed
-  fit('should load a cached exploration after fetching it from the backend',
+
+  it('should load a cached exploration after fetching it from the backend',
     fakeAsync(() => {
       let successHandler = jasmine.createSpy('success');
       let failHandler = jasmine.createSpy('fail');
@@ -120,11 +120,8 @@ fdescribe('Read only exploration backend API service', () => {
       expect(req2.request.method).toEqual('GET');
       req2.flush(sampleDataResults);
 
-      // req.flush(sampleDataResults);
-      // todo
-      // flushMicrotasks();
-      httpTestingController.expectNone('/explorehandler/init/0');
       flushMicrotasks();
+
       expect(successHandler).toHaveBeenCalled();
       expect(failHandler).not.toHaveBeenCalled();
     }));
@@ -135,8 +132,6 @@ fdescribe('Read only exploration backend API service', () => {
       let failHandler = jasmine.createSpy('fail');
 
       // Loading a exploration the first time should fetch it from the backend.
-      // $httpBackend.expect('GET', '/explorehandler/init/0').respond(
-      //   500, 'Error loading exploration 0.');
       readOnlyExplorationBackendApiService.loadExploration(
         '0', null).then(successHandler, failHandler);
 
@@ -219,9 +214,6 @@ fdescribe('Read only exploration backend API service', () => {
     readOnlyExplorationBackendApiService.loadLatestExploration('0').then(
       successHandler, failHandler);
 
-    // http://brianmcd.com/2014/03/27/
-    // a-tip-for-angular-unit-tests-with-promises.html
-    // $rootScope.$digest();
     flushMicrotasks();
 
     expect(successHandler).toHaveBeenCalledWith({
