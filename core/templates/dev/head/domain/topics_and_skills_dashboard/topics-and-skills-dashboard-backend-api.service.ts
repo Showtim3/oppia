@@ -12,32 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {HttpClient} from '@angular/common/http';
+import {TopicsAndSkillsDashboardDomainConstants} from
+  // eslint-disable-next-line max-len
+  'domain/topics_and_skills_dashboard/topics-and-skills-dashboard-domain.constants';
+import {Injectable} from '@angular/core';
+import {downgradeInjectable} from '@angular/upgrade/static';
+
+
 /**
  * @fileoverview Service to retrieve information of topics and skills dashboard
   from the backend and to merge skills from the dashboard.
  */
 
-require(
-  'domain/topics_and_skills_dashboard/' +
-  'topics-and-skills-dashboard-domain.constants.ajs.ts');
+@Injectable({
+  providedIn: 'root'
+})
+export class TopicsAndSkillsDashboardBackendApiService {
+  constructor(private httpClient: HttpClient) {}
 
-angular.module('oppia').factory('TopicsAndSkillsDashboardBackendApiService', [
-  '$http', 'MERGE_SKILLS_URL', function($http, MERGE_SKILLS_URL) {
-    var _fetchDashboardData = function() {
-      return $http.get('/topics_and_skills_dashboard/data');
-    };
-
-    var _mergeSkills = function(oldSkillId, newSkillId) {
-      var mergeSkillsData = {
-        old_skill_id: oldSkillId,
-        new_skill_id: newSkillId
-      };
-      return $http.post(MERGE_SKILLS_URL, mergeSkillsData);
-    };
-
-    return {
-      fetchDashboardData: _fetchDashboardData,
-      mergeSkills: _mergeSkills
-    };
+  _fetchDashboardData() {
+    return this.httpClient.get('/topics_and_skills_dashboard/data').toPromise();
   }
-]);
+
+  _mergeSkills(oldSkillId, newSkillId) {
+    let mergeSkillsData = {
+      old_skill_id: oldSkillId,
+      new_skill_id: newSkillId
+    };
+    return this.httpClient.post(
+      TopicsAndSkillsDashboardDomainConstants.MERGE_SKILLS_URL,
+      mergeSkillsData).toPromise();
+  }
+
+  fetchDashboardData = this._fetchDashboardData;
+  mergeSkills = this._mergeSkills;
+}
+
+
+angular.module('oppia').factory(
+  'TopicsAndSkillsDashboardBackendApiService',
+  downgradeInjectable(TopicsAndSkillsDashboardBackendApiService));
