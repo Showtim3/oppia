@@ -31,11 +31,11 @@ import {downgradeInjectable} from '@angular/upgrade/static';
 export class TopicsAndSkillsDashboardBackendApiService {
   constructor(private httpClient: HttpClient) {}
 
-  _fetchDashboardData() {
+  fetchDashboardData() {
     return this.httpClient.get('/topics_and_skills_dashboard/data').toPromise();
   }
 
-  _mergeSkills(oldSkillId, newSkillId) {
+  mergeSkills(oldSkillId, newSkillId) {
     let mergeSkillsData = {
       old_skill_id: oldSkillId,
       new_skill_id: newSkillId
@@ -45,8 +45,6 @@ export class TopicsAndSkillsDashboardBackendApiService {
       mergeSkillsData).toPromise();
   }
 
-  fetchDashboardData = this._fetchDashboardData;
-  mergeSkills = this._mergeSkills;
 }
 
 
