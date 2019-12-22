@@ -168,6 +168,10 @@
     "one-var": [
       "off"
     ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
     "operator-linebreak": [
       "error",
       "after"
