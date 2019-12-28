@@ -40,6 +40,11 @@ var AdminPage = function() {
   var roleUsernameOption = element(by.css(
     '.protractor-test-username-value'));
   var viewRoleButton = element(by.css('.protractor-test-role-success'));
+  var oneOffJobRows = element.all(by.css('.protractor-test-one-off-jobs-rows'));
+  var unfinishedOneOffJobRows = element.all(by.css(
+    '.protractor-test-unfinished-one-off-jobs-rows'));
+  var unfinishedOffJobIDs = element.all(by.css(
+    '.protractor-test-unfinished-one-off-jobs-id'));
 
   // The reload functions are used for mobile testing
   // done via Browserstack. These functions may cause
@@ -124,6 +129,11 @@ var AdminPage = function() {
     return waitFor.pageToFullyLoad();
   };
 
+  this.getJobsTab = function() {
+    browser.get(ADMIN_URL_SUFFIX + '#/jobs');
+    return waitFor.pageToFullyLoad();
+  };
+
   this.editConfigProperty = function(
       propertyName, objectType, editingInstructions) {
     this.get();
@@ -139,6 +149,67 @@ var AdminPage = function() {
       if (!success) {
         throw Error('Could not find config property: ' + propertyName);
       }
+    });
+  };
+
+  this.startOneOffJob = function(jobName) {
+    browser.sleep(5000);
+
+    oneOffJobRows.count().then(function(len) {
+      let found = false;
+      for (let i = 0; i < len; i++) {
+        if (found) {
+          break;
+        }
+        let row = oneOffJobRows.get(i);
+        row.getText().then(function(text) {
+          if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
+            found = true;
+            oneOffJobRows.get(i).element(
+              by.css('.protractor-test-one-off-jobs-start-btn')).click();
+            browser.sleep(5000);
+          }
+        });
+      }
+    });
+  };
+
+  this.expectJobTobeRunning = function(jobName) {
+    browser.sleep(5000);
+    this._expectJobTobeStarted(jobName).then(function(elems) {
+      expect(elems.length).toEqual(1);
+    });
+  };
+
+  this.stopOneOffJob = function(jobName) {
+    browser.sleep(5000);
+    var index = -1;
+    var selectedIndex = 0;
+    unfinishedOneOffJobRows.map(function(row) {
+      return row.getText().then((text) => {
+        index++;
+        if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
+          selectedIndex = index;
+        }
+      });
+    }).then(function() {
+      unfinishedOneOffJobRows.get(selectedIndex).element(
+        by.css('.protractor-test-one-off-jobs-stop-btn')).click();
+    });
+  };
+
+  this.expectNumberOfRunningOneOffJobs = function(count) {
+    element.all(by.css(
+      '.protractor-test-unfinished-one-off-jobs-id')).count().then((len) =>{
+      expect(len).toEqual(count);
+    });
+  };
+
+  this._expectJobTobeStarted = function(jobName) {
+    return unfinishedOffJobIDs.filter(function(row) {
+      return row.getText().then(text => {
+        return (text.toLowerCase().startsWith(jobName.toLowerCase()));
+      });
     });
   };
 
