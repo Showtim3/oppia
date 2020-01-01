@@ -49,9 +49,10 @@ describe('Admin Page', function() {
     adminPage.updateRole('collectionEditor1', 'collection editor');
     adminPage.getUsersAsssignedToRole('collection editor');
     adminPage.expectUsernamesToMatch(['collectionEditor1']);
+    users.logout();
   });
 
-  it('should run,verify and stop one-off jobs', function() {
+  fit('should run,verify and stop one-off jobs', function() {
     users.createAndLoginAdminUser('adminA@adminTab.com', 'alphaMan');
     adminPage.getJobsTab();
 

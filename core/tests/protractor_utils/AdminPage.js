@@ -153,48 +153,34 @@ var AdminPage = function() {
   };
 
   this.startOneOffJob = function(jobName) {
-    browser.sleep(5000);
+    this._startOneOffJob(jobName, 0);
+  };
 
-    oneOffJobRows.count().then(function(len) {
-      let found = false;
-      for (let i = 0; i < len; i++) {
-        if (found) {
-          break;
-        }
-        let row = oneOffJobRows.get(i);
-        row.getText().then(function(text) {
-          if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
-            found = true;
-            oneOffJobRows.get(i).element(
-              by.css('.protractor-test-one-off-jobs-start-btn')).click();
-            browser.sleep(5000);
-          }
-        });
+  this._startOneOffJob = function(jobName, i) {
+    waitFor.visibilityOf(oneOffJobRows.first(),
+      'Starting one off jobs taking too long to appear.');
+    oneOffJobRows.get(i).getText().then((text) => {
+      if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
+        oneOffJobRows.get(i).element(
+          by.css('.protractor-test-one-off-jobs-start-btn')).click();
+      } else {
+        this._startOneOffJob(jobName, ++i);
       }
     });
   };
 
-  this.expectJobTobeRunning = function(jobName) {
-    browser.sleep(5000);
-    this._expectJobTobeStarted(jobName).then(function(elems) {
-      expect(elems.length).toEqual(1);
-    });
+  this.stopOneOffJob = function(jobName) {
+    this._stopOneOffJob(jobName, 0);
   };
 
-  this.stopOneOffJob = function(jobName) {
-    browser.sleep(5000);
-    var index = -1;
-    var selectedIndex = 0;
-    unfinishedOneOffJobRows.map(function(row) {
-      return row.getText().then((text) => {
-        index++;
-        if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
-          selectedIndex = index;
-        }
-      });
-    }).then(function() {
-      unfinishedOneOffJobRows.get(selectedIndex).element(
-        by.css('.protractor-test-one-off-jobs-stop-btn')).click();
+  this._stopOneOffJob = function(jobName, i) {
+    unfinishedOneOffJobRows.get(i).getText().then((text) => {
+      if (text.toLowerCase().startsWith(jobName.toLowerCase())) {
+        unfinishedOneOffJobRows.get(i).element(
+          by.css('.protractor-test-one-off-jobs-stop-btn')).click();
+      } else {
+        this._stopOneOffJob(jobName, ++i);
+      }
     });
   };
 
@@ -205,11 +191,17 @@ var AdminPage = function() {
     });
   };
 
-  this._expectJobTobeStarted = function(jobName) {
-    return unfinishedOffJobIDs.filter(function(row) {
-      return row.getText().then(text => {
-        return (text.toLowerCase().startsWith(jobName.toLowerCase()));
+  this.expectJobTobeRunning = function(jobName) {
+    this.getJobsTab();
+    waitFor.visibilityOf(unfinishedOffJobIDs.first(),
+      'Unfinished Jobs taking too long to appear');
+    let unfinishedJobs = unfinishedOffJobIDs.filter((element) => {
+      return element.getText().then((job) => {
+        return job.toLowerCase().startsWith(jobName.toLowerCase());
       });
+    });
+    unfinishedJobs.get(0).getText((job) => {
+      expect(job.toLowerCase().startsWith(jobName.toLowerCase())).toBeTrue();
     });
   };
 

@@ -76,12 +76,12 @@
 </md-card>
 
 <md-card ng-if="$ctrl.UNFINISHED_JOB_DATA.length > 0"
-         class="oppia-page-card oppia-long-text" style="max-width: 900px">
+         class="oppia-page-card oppia-long-text protractor-test-unfinished-jobs-card" style="max-width: 900px">
   <h3>Unfinished jobs</h3>
   <em>Note: This table may be stale; refresh to see the latest state.</em>
   <table class="table">
     <tr>
-      <th>Job ID</th>
+      <th class="protractor-test-unfinished-one-off-jobs-id-header">Job ID</th>
       <th>Status</th>
       <th>Time started</th>
       <th>Time finished</th>
