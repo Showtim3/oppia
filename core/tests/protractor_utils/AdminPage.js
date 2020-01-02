@@ -192,9 +192,11 @@ var AdminPage = function() {
   };
 
   this.expectJobTobeRunning = function(jobName) {
-    this.getJobsTab();
-    waitFor.visibilityOf(unfinishedOffJobIDs.first(),
-      'Unfinished Jobs taking too long to appear');
+    browser.refresh();
+    waitFor.pageToFullyLoad();
+    waitFor.visibilityOf(element(
+      by.css('.protractor-test-unfinished-jobs-card')),
+    'Unfinished Jobs taking too long to appear');
     let unfinishedJobs = unfinishedOffJobIDs.filter((element) => {
       return element.getText().then((job) => {
         return job.toLowerCase().startsWith(jobName.toLowerCase());
