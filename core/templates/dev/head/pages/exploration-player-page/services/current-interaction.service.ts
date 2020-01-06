@@ -19,38 +19,43 @@
  * answer submission process.
  */
 
-require(
-  'components/state-editor/state-editor-properties-services/' +
-  'state-property.service.ts');
-require('services/context.service.ts');
-require('pages/exploration-player-page/services/' +
-  'player-position.service.ts');
-require('pages/exploration-player-page/services/' +
-  'player-transcript.service.ts');
-require('services/debug-info-tracker.service.ts');
+import { downgradeInjectable } from '@angular/upgrade/static';
+import { Injectable } from '@angular/core';
 
-angular.module('oppia').factory('CurrentInteractionService', [
-  'ContextService', 'DebugInfoTrackerService', 'PlayerPositionService',
-  'PlayerTranscriptService',
-  function(ContextService, DebugInfoTrackerService, PlayerPositionService,
-      PlayerTranscriptService) {
-    var _submitAnswerFn = null;
-    var _onSubmitFn = null;
-    var _validityCheckFn = null;
-    var _presubmitHooks = [];
+import { ContextService } from 'services/context.service';
+import { DebugInfoTrackerService } from 'services/debug-info-tracker.service';
+import { PlayerPositionService } from
+  'pages/exploration-player-page/services/player-position.service';
+import { PlayerTranscriptService } from
+  'pages/exploration-player-page/services/player-transcript.service';
 
-    return {
-      setOnSubmitFn: function(onSubmit) {
-        /**
+@Injectable({
+  providedIn: 'root'
+})
+export class CurrentInteractionService {
+  _submitAnswerFn: Function = null;
+  _onSubmitFn: Function = null;
+  _validityCheckFn: Function = null;
+  _presubmitHooks: Array<Function> = [];
+
+  constructor(private contextService: ContextService,
+              private debugInfoTrackerService: DebugInfoTrackerService,
+              private playerPositionService: PlayerPositionService,
+           private playerTranscriptService: PlayerTranscriptService) {}
+
+  setOnSubmitFn(onSubmit: Function): void {
+    /**
          * The ConversationSkinDirective should register its onSubmit
          * callback here.
          *
          * @param {function(answer, interactionRulesService)} onSubmit
          */
-        _onSubmitFn = onSubmit;
-      },
-      registerCurrentInteraction: function(submitAnswerFn, validityCheckFn) {
-        /**
+    this._onSubmitFn = onSubmit;
+  }
+
+  registerCurrentInteraction(
+      submitAnswerFn: Function, validityCheckFn: Function): void {
+    /**
          * Each interaction directive should call registerCurrentInteraction
          * when the interaction directive is first created.
          *
@@ -63,62 +68,69 @@ angular.module('oppia').factory('CurrentInteractionService', [
          *   interaction passes in null, the submit button will remain
          *   enabled (for the entire duration of the current interaction).
          */
-        _submitAnswerFn = submitAnswerFn || null;
-        _validityCheckFn = validityCheckFn || null;
-      },
-      registerPresubmitHook: function(hookFn) {
-        /* Register a hook that will be called right before onSubmit.
+    this._submitAnswerFn = submitAnswerFn || null;
+    this._validityCheckFn = validityCheckFn || null;
+  }
+
+  registerPresubmitHook(hookFn: Function): void {
+    /* Register a hook that will be called right before onSubmit.
          * All hooks for the current interaction will be cleared right
          * before loading the next card.
          */
-        _presubmitHooks.push(hookFn);
-      },
-      clearPresubmitHooks: function() {
-        /* Clear out all the hooks for the current interaction. Should
+    this._presubmitHooks.push(hookFn);
+  }
+
+  clearPresubmitHooks(): void {
+    /* Clear out all the hooks for the current interaction. Should
          * be called before loading the next card.
          */
-        _presubmitHooks = [];
-      },
-      onSubmit: function(answer, interactionRulesService) {
-        for (var i = 0; i < _presubmitHooks.length; i++) {
-          _presubmitHooks[i]();
-        }
-        _onSubmitFn(answer, interactionRulesService);
-      },
-      submitAnswer: function() {
-        /* This starts the answer submit process, it should be called once the
+    this._presubmitHooks = [];
+  }
+
+  onSubmit(answer: any, interactionRulesService: any): void {
+    for (let i = 0; i < this._presubmitHooks.length; i++) {
+      this._presubmitHooks[i]();
+    }
+    this._onSubmitFn(answer, interactionRulesService);
+  }
+
+  submitAnswer(): void {
+    /* This starts the answer submit process, it should be called once the
          * learner presses the "Submit" button.
          */
-        if (_submitAnswerFn === null) {
-          var index = PlayerPositionService.getDisplayedCardIndex();
-          var displayedCard = PlayerTranscriptService.getCard(index);
-          var sequenceOfInteractions = (
-            JSON.stringify(DebugInfoTrackerService.getSequenceOfActions()));
-          var additionalInfo = ('\nUndefined submit answer debug logs:' +
-            '\nInteraction ID: ' + displayedCard.getInteractionId() +
-            '\nExploration ID: ' + ContextService.getExplorationId() +
-            '\nState Name: ' + displayedCard.getStateName() +
-            '\nContext: ' + ContextService.getPageContext() +
-            '\nSequence of steps: ' + sequenceOfInteractions +
-            '\nErrored at index: ' + index);
-          throw Error('The current interaction did not ' +
-                      'register a _submitAnswerFn.' + additionalInfo);
-        } else {
-          _submitAnswerFn();
-        }
-      },
-      isSubmitButtonDisabled: function() {
-        /* Returns whether or not the Submit button should be disabled based on
+    if (this._submitAnswerFn === null) {
+      let index = this.playerPositionService.getDisplayedCardIndex();
+      let displayedCard = this.playerTranscriptService.getCard(index);
+      let sequenceOfInteractions = (
+        JSON.stringify(this.debugInfoTrackerService.getSequenceOfActions()));
+      let additionalInfo = ('\nUndefined submit answer debug logs:' +
+              '\nInteraction ID: ' + displayedCard.getInteractionId() +
+              '\nExploration ID: ' + this.contextService.getExplorationId() +
+              '\nState Name: ' + displayedCard.getStateName() +
+              '\nContext: ' + this.contextService.getPageContext() +
+              '\nSequence of steps: ' + sequenceOfInteractions +
+              '\nErrored at index: ' + index);
+      throw Error('The current interaction did not ' +
+              'register a _submitAnswerFn.' + additionalInfo);
+    } else {
+      this._submitAnswerFn();
+    }
+  }
+
+  isSubmitButtonDisabled(): boolean {
+    /* Returns whether or not the Submit button should be disabled based on
          * the validity of the current answer. If the interaction does not pass
          * in a _validityCheckFn, then _validityCheckFn will be null and by
          * default we assume the answer is valid, so the submit button should
          * not be disabled.
          */
-        if (_validityCheckFn === null) {
-          return false;
-        }
-        return !_validityCheckFn();
-      },
-    };
+    if (this._validityCheckFn === null) {
+      return false;
+    }
+    return !this._validityCheckFn();
   }
-]);
+}
+
+angular.module('oppia').factory(
+  'CurrentInteractionService',
+  downgradeInjectable(CurrentInteractionService));
