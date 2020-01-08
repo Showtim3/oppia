@@ -56,6 +56,8 @@ import { ConceptCardObjectFactory } from
 import { ContextService } from 'services/context.service';
 import { CountVectorizerService } from 'classifiers/count-vectorizer.service';
 import { CsrfTokenService } from 'services/csrf-token.service';
+import {CurrentInteractionService} from
+      'pages/exploration-player-page/services/current-interaction.service';
 import { DateTimeFormatService } from 'services/date-time-format.service';
 import { DebouncerService } from 'services/debouncer.service';
 import { DeviceInfoService } from 'services/contextual/device-info.service';
@@ -477,6 +479,12 @@ export class UpgradedServices {
       upgradedServices['SubtopicObjectFactory'],
       upgradedServices['StoryReferenceObjectFactory'],
       upgradedServices['SkillSummaryObjectFactory']);
+    upgradedServices['CurrentInteractionService'] =
+        new CurrentInteractionService(
+          upgradedServices['ContextService'],
+          upgradedServices['DebugInfoTrackerService'],
+          upgradedServices['PlayerPositionService'],
+          upgradedServices['PlayerTranscriptService']);
 
     // Group 5: Services depending on groups 1-4.
     upgradedServices['SolutionObjectFactory'] =
