@@ -33,9 +33,9 @@ import { PlayerTranscriptService } from
   providedIn: 'root'
 })
 export class CurrentInteractionService {
-  _submitAnswerFn: Function = null;
-  _onSubmitFn: Function = null;
-  _validityCheckFn: Function = null;
+  _submitAnswerFn: Function | null = null;
+  _onSubmitFn: Function | null = null;
+  _validityCheckFn: Function | null = null;
   _presubmitHooks: Array<Function> = [];
 
   constructor(private contextService: ContextService,
