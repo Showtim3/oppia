@@ -69,19 +69,21 @@ export class UserService {
     let profilePictureDataUrl = (
       this.urlInterpolationService.getStaticImageUrl(
         AppConstants.DEFAULT_PROFILE_IMAGE_PATH));
-    return this.getUserInfoAsync().then((userInfo) => {
-      if (userInfo.isLoggedIn()) {
-        return this.httpClient.get(
-          '/preferenceshandler/profile_picture'
-        ).toPromise().then((response: any) => {
-          if (response.data.profile_picture_data_url) {
-            profilePictureDataUrl = response.data.profile_picture_data_url;
-          }
-          return profilePictureDataUrl;
-        });
-      } else {
-        return Promise.resolve(profilePictureDataUrl);
-      }
+    return new Promise((resolve, reject) => {
+      this.getUserInfoAsync().then((userInfo) => {
+        if (userInfo.isLoggedIn()) {
+          this.httpClient.get(
+            '/preferenceshandler/profile_picture'
+          ).toPromise().then((response: any) => {
+            if (response.data.profile_picture_data_url) {
+              profilePictureDataUrl = response.data.profile_picture_data_url;
+            }
+            return resolve(profilePictureDataUrl);
+          });
+        } else {
+          return resolve(profilePictureDataUrl);
+        }
+      });
     });
   }
 
@@ -104,17 +106,19 @@ export class UserService {
   }
 
   getUserCommunityRightsData(): Promise<Object> {
-    if (this.userCommunityRightsInfo) {
-      return Promise.resolve(this.userCommunityRightsInfo);
-    } else {
-      return this.httpClient.get(
-        this.USER_COMMUNITY_RIGHTS_DATA_URL).toPromise().then(
-        (response: any) => {
-          this.userCommunityRightsInfo = response.data;
-          return Promise.resolve(this.userCommunityRightsInfo);
-        }
-      );
-    }
+    return new Promise((resolve, reject) => {
+      if (this.userCommunityRightsInfo) {
+        return resolve(this.userCommunityRightsInfo);
+      } else {
+        return this.httpClient.get(
+          this.USER_COMMUNITY_RIGHTS_DATA_URL).toPromise().then(
+          (response: any) => {
+            this.userCommunityRightsInfo = response.data;
+            return resolve(this.userCommunityRightsInfo);
+          }
+        );
+      }
+    });
   }
 }
 

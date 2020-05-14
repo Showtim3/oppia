@@ -153,36 +153,38 @@ fdescribe('User Service', () => {
     req.flush(sampleUserInfoBackendObject);
   });
 
-  // it('should return image data', () => {
-  //   const requestUrl = '/preferenceshandler/profile_picture';
-  //   // Create a test user for checking profile picture of user.
-  //   const sampleUserInfoBackendObject = {
-  //     is_moderator: false,
-  //     is_admin: false,
-  //     is_super_admin: false,
-  //     is_topic_manager: false,
-  //     can_create_collections: true,
-  //     preferred_site_language_code: null,
-  //     username: 'tester',
-  //     user_is_logged_in: true
-  //   };
-  //
-  //   userService.getProfileImageDataUrlAsync().then((dataUrl) => {
-  //     expect(dataUrl).toBe('image data');
-  //   });
-  //
-  //   const req2 = httpTestingController.expectOne('/userinfohandler');
-  //   expect(req2.request.method).toEqual('GET');
-  //   req2.flush(sampleUserInfoBackendObject);
-  //
-  //   userService.getProfileImageDataUrlAsync().then((dataUrl) => {
-  //     expect(dataUrl).toBe(urlInterpolationService.getStaticImageUrl(
-  //       '/avatar/user_blue_72px.png'));
-  //   });
-  //   const req = httpTestingController.expectOne(requestUrl);
-  //   expect(req.request.method).toEqual('GET');
-  //   req.flush({profile_picture_data_url: 'image data'});
-  // });
+  it('should return image data', () => {
+    const requestUrl = '/preferenceshandler/profile_picture';
+    // Create a test user for checking profile picture of user.
+
+    const sampleUserInfoBackendObject = {
+      is_moderator: false,
+      is_admin: false,
+      is_super_admin: false,
+      is_topic_manager: false,
+      can_create_collections: true,
+      preferred_site_language_code: null,
+      username: 'tester',
+      user_is_logged_in: true
+    };
+
+    userService.getProfileImageDataUrlAsync().then((dataUrl) => {
+      expect(dataUrl).toBe('image data');
+    });
+
+    const req2 = httpTestingController.expectOne('/userinfohandler');
+    expect(req2.request.method).toEqual('GET');
+    req2.flush(sampleUserInfoBackendObject);
+    //
+    // userService.getProfileImageDataUrlAsync().then((dataUrl) => {
+    //   expect(dataUrl).toBe(urlInterpolationService.getStaticImageUrl(
+    //     '/avatar/user_blue_72px.png'));
+    // });
+    //
+    // const req = httpTestingController.expectOne(requestUrl);
+    // expect(req.request.method).toEqual('GET');
+    // req.flush({profile_picture_data_url: 'image data'});
+  });
 
   it('should return the default profile image path when user is not logged',
     () => {
@@ -246,56 +248,57 @@ fdescribe('User Service', () => {
       status: 500
     });
 
+    userService.setProfileImageDataUrlAsync(newProfileImageDataurl)
+      /* eslint-disable dot-notation */
+      .catch((error: HttpErrorResponse) => {
+      /* eslint-enable dot-notation */
+        console.log(error.error);
+        expect(error.error.errorMessage).toEqual(errorMessage);
+      });
+
     const req = httpTestingController.expectOne('/preferenceshandler/data');
     req.error(new ErrorEvent('Error'), errorResponse);
     expect(req.request.method).toEqual('PUT');
     // req.flush({}, {status: 500, statusText: errorMessage});
-
-    userService.setProfileImageDataUrlAsync(newProfileImageDataurl)
-      /* eslint-disable dot-notation */
-      .catch((error) => {
-      /* eslint-enable dot-notation */
-        expect(error.data).toEqual(errorMessage);
-      });
   });
 
-  // it('should return user community rights data', () => {
-  //   const sampleUserCommunityRightsDict = {
-  //     translation: ['hi'],
-  //     voiceover: [],
-  //     question: true
-  //   };
-  //
-  //   userService.getUserCommunityRightsData().then((userCommunityRights) => {
-  //     expect(userCommunityRights).toEqual(sampleUserCommunityRightsDict);
-  //   });
-  //
-  //   const req = httpTestingController.expectOne('/usercommunityrightsdatahandler');
-  //   expect(req.request.method).toEqual('GET');
-  //   req.flush(sampleUserCommunityRightsDict);
-  // });
+  it('should return user community rights data', () => {
+    const sampleUserCommunityRightsDict = {
+      translation: ['hi'],
+      voiceover: [],
+      question: true
+    };
 
-  // it('should not fetch userCommunityRights if it is was fetched before',
-  //   () => {
-  //     const sampleUserCommunityRightsDict = {
-  //       translation: ['hi'],
-  //       voiceover: [],
-  //       question: true
-  //     };
-  //
-  //     userService.getUserCommunityRightsData().then(
-  //       (userCommunityRights) => {
-  //         expect(userCommunityRights).toEqual(sampleUserCommunityRightsDict);
-  //         // Fetch userCommunityRightsInfo again.
-  //         userService.getUserCommunityRightsData().then((
-  //             sameUserCommunityRights) => {
-  //           expect(sameUserCommunityRights).toEqual(
-  //             sampleUserCommunityRightsDict);
-  //         });
-  //       });
-  //
-  //     const req = httpTestingController.expectOne('/usercommunityrightsdatahandler');
-  //     expect(req.request.method).toEqual('GET');
-  //     req.flush(sampleUserCommunityRightsDict);
-  //   });
+    userService.getUserCommunityRightsData().then((userCommunityRights) => {
+      expect(userCommunityRights).toEqual(sampleUserCommunityRightsDict);
+    });
+
+    const req = httpTestingController.expectOne('/usercommunityrightsdatahandler');
+    expect(req.request.method).toEqual('GET');
+    req.flush(sampleUserCommunityRightsDict);
+  });
+
+  it('should not fetch userCommunityRights if it is was fetched before',
+    () => {
+      const sampleUserCommunityRightsDict = {
+        translation: ['hi'],
+        voiceover: [],
+        question: true
+      };
+
+      userService.getUserCommunityRightsData().then(
+        (userCommunityRights) => {
+          expect(userCommunityRights).toEqual(sampleUserCommunityRightsDict);
+          // Fetch userCommunityRightsInfo again.
+          userService.getUserCommunityRightsData().then((
+              sameUserCommunityRights) => {
+            expect(sameUserCommunityRights).toEqual(
+              sampleUserCommunityRightsDict);
+          });
+        });
+
+      const req = httpTestingController.expectOne('/usercommunityrightsdatahandler');
+      expect(req.request.method).toEqual('GET');
+      req.flush(sampleUserCommunityRightsDict);
+    });
 });
