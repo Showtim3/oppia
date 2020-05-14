@@ -78,10 +78,10 @@ export class UserService {
             if (response.profile_picture_data_url) {
               profilePictureDataUrl = response.profile_picture_data_url;
             }
-            return resolve(profilePictureDataUrl);
+            resolve(profilePictureDataUrl);
           });
         } else {
-          return resolve(profilePictureDataUrl);
+          resolve(profilePictureDataUrl);
         }
       });
     });
@@ -108,13 +108,13 @@ export class UserService {
   getUserCommunityRightsData(): Promise<Object> {
     return new Promise((resolve, reject) => {
       if (this.userCommunityRightsInfo) {
-        return resolve(this.userCommunityRightsInfo);
+        resolve(this.userCommunityRightsInfo);
       } else {
         return this.httpClient.get(
           this.USER_COMMUNITY_RIGHTS_DATA_URL).toPromise().then(
           (response: any) => {
             this.userCommunityRightsInfo = response;
-            return resolve(this.userCommunityRightsInfo);
+            resolve(this.userCommunityRightsInfo);
           }
         );
       }
