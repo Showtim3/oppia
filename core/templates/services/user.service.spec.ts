@@ -24,6 +24,7 @@ import {UserService} from 'services/user.service';
 import {HttpTestingController, HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed, flushMicrotasks, fakeAsync} from '@angular/core/testing';
 import {HttpErrorResponse} from '@angular/common/http';
+import {WindowRef} from 'services/contextual/window-ref.service';
 
 
 fdescribe('User Service', () => {
@@ -31,9 +32,10 @@ fdescribe('User Service', () => {
   let urlInterpolationService: UrlInterpolationService = null;
   let userInfoObjectFactory: UserInfoObjectFactory;
   let csrfTokenService: CsrfTokenService = null;
-  let urlService: UrlService = null;
+  let urlService: UrlService;
   let httpTestingController: HttpTestingController = null;
   let sampleUserInfo;
+  let windowref;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -54,10 +56,11 @@ fdescribe('User Service', () => {
     httpTestingController = TestBed.get(HttpTestingController);
     sampleUserInfo = userInfoObjectFactory.createDefault();
     csrfTokenService = TestBed.get(CsrfTokenService);
-
+    windowref = TestBed.get(WindowRef);
     spyOn(csrfTokenService, 'getTokenAsync').and.callFake(function() {
       return Promise.resolve('sample-csrf-token');
     });
+    // spyOn(urlService, 'getPathname').and.returnValue('/home');
     // spyOn(window.location, 'pathname').and.returnValue('home');
   });
 
@@ -100,10 +103,15 @@ fdescribe('User Service', () => {
   });
 
   it('should return new userInfo data when url path is signup', () => {
+    // spyOn(urlService, 'getPathname').and.returnValue('/signup');
+    // spyOn(urlService, 'getPathname').and.callFake(function() {
+    //   return '/signup';
+    // });
+    // spyOn(urlService, 'getPathname').and.returnValue('/signup');
     spyOn(urlService, 'getPathname').and.returnValue('/signup');
-
+    let sample = userInfoObjectFactory.createDefault();
     userService.getUserInfoAsync().then((userInfo) => {
-      expect(userInfo).toEqual(sampleUserInfo);
+      expect(userInfo).toEqual(sample);
     });
   });
 
@@ -175,15 +183,15 @@ fdescribe('User Service', () => {
     const req2 = httpTestingController.expectOne('/userinfohandler');
     expect(req2.request.method).toEqual('GET');
     req2.flush(sampleUserInfoBackendObject);
-    //
-    // userService.getProfileImageDataUrlAsync().then((dataUrl) => {
-    //   expect(dataUrl).toBe(urlInterpolationService.getStaticImageUrl(
-    //     '/avatar/user_blue_72px.png'));
-    // });
-    //
-    // const req = httpTestingController.expectOne(requestUrl);
-    // expect(req.request.method).toEqual('GET');
-    // req.flush({profile_picture_data_url: 'image data'});
+
+    userService.getProfileImageDataUrlAsync().then((dataUrl) => {
+      expect(dataUrl).toBe(urlInterpolationService.getStaticImageUrl(
+        '/avatar/user_blue_72px.png'));
+    });
+
+    const req = httpTestingController.expectOne(requestUrl);
+    expect(req.request.method).toEqual('GET');
+    req.flush({profile_picture_data_url: 'image data'});
   });
 
   it('should return the default profile image path when user is not logged',
@@ -230,7 +238,7 @@ fdescribe('User Service', () => {
 
     userService.setProfileImageDataUrlAsync(newProfileImageDataurl).then(
       (response: any) => {
-        expect(response.data.profile_picture_data_url).toBe(
+        expect(response.profile_picture_data_url).toBe(
           newProfileImageDataurl);
       }
     );
@@ -252,7 +260,6 @@ fdescribe('User Service', () => {
       /* eslint-disable dot-notation */
       .catch((error: HttpErrorResponse) => {
       /* eslint-enable dot-notation */
-        console.log(error.error);
         expect(error.error.errorMessage).toEqual(errorMessage);
       });
 

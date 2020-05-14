@@ -45,23 +45,23 @@ export class UserService {
       private windowRef: WindowRef
   ) {}
 
-  getUserInfoAsync() {
-    if (this.urlService.getPathname() === '/signup') {
-      return Promise.resolve(this.userInfoObjectFactory.createDefault());
-    }
-    if (this.userInfo) {
-      return Promise.resolve(this.userInfo);
-    }
-    return this.httpClient.get(
-      '/userinfohandler'
-    ).toPromise().then((response: any) => {
-      if (response.user_is_logged_in) {
-        this.userInfo = (
-          this.userInfoObjectFactory.createFromBackendDict(response));
-        return Promise.resolve(this.userInfo);
-      } else {
-        return Promise.resolve(this.userInfoObjectFactory.createDefault());
+  getUserInfoAsync():Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.urlService.getPathname() === '/signup') {
+        resolve(this.userInfoObjectFactory.createDefault());
       }
+      if (this.userInfo) {
+        resolve(this.userInfo);
+      }
+      return this.httpClient.get('/userinfohandler').toPromise().then((response: any) => {
+        if (response.user_is_logged_in) {
+          this.userInfo = (
+            this.userInfoObjectFactory.createFromBackendDict(response));
+          resolve(this.userInfo);
+        } else {
+          resolve(this.userInfoObjectFactory.createDefault());
+        }
+      });
     });
   }
 
