@@ -12,92 +12,111 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-require('domain/user/UserInfoObjectFactory.ts');
-require('services/contextual/url.service.ts');
+import {downgradeInjectable} from '@angular/upgrade/static';
+import {Injectable} from '@angular/core';
+
+import {UrlInterpolationService} from 'domain/utilities/url-interpolation.service';
+import {HttpClient} from '@angular/common/http';
+import {UserInfoObjectFactory} from 'domain/user/UserInfoObjectFactory';
+import {UrlService} from 'services/contextual/url.service';
+import {WindowRef} from 'services/contextual/window-ref.service';
+import {AppConstants} from 'app.constants';
+
 
 /**
  * @fileoverview Service for user data.
  */
 
-angular.module('oppia').factory('UserService', [
-  '$http', '$q', '$window', 'UrlInterpolationService', 'UrlService',
-  'UserInfoObjectFactory', 'DEFAULT_PROFILE_IMAGE_PATH',
-  function($http, $q, $window, UrlInterpolationService, UrlService,
-      UserInfoObjectFactory, DEFAULT_PROFILE_IMAGE_PATH) {
-    var PREFERENCES_DATA_URL = '/preferenceshandler/data';
-    var USER_COMMUNITY_RIGHTS_DATA_URL = '/usercommunityrightsdatahandler';
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  PREFERENCES_DATA_URL = '/preferenceshandler/data';
+  USER_COMMUNITY_RIGHTS_DATA_URL = '/usercommunityrightsdatahandler';
 
-    var userInfo = null;
-    var userCommunityRightsInfo = null;
+  userInfo = null;
+  userCommunityRightsInfo = null;
 
-    var getUserInfoAsync = function() {
-      if (UrlService.getPathname() === '/signup') {
-        return $q.resolve(UserInfoObjectFactory.createDefault());
+  constructor(
+      private httpClient: HttpClient,
+      private urlService: UrlService,
+      private urlInterpolationService: UrlInterpolationService,
+      private userInfoObjectFactory: UserInfoObjectFactory,
+      private windowRef: WindowRef
+  ) {}
+
+  getUserInfoAsync() {
+    if (this.urlService.getPathname() === '/signup') {
+      return Promise.resolve(this.userInfoObjectFactory.createDefault());
+    }
+    if (this.userInfo) {
+      return Promise.resolve(this.userInfo);
+    }
+    return this.httpClient.get(
+      '/userinfohandler'
+    ).toPromise().then((response: any) => {
+      if (response.data.user_is_logged_in) {
+        this.userInfo = (
+          this.userInfoObjectFactory.createFromBackendDict(response.data));
+        return Promise.resolve(this.userInfo);
+      } else {
+        return Promise.resolve(this.userInfoObjectFactory.createDefault());
       }
-      if (userInfo) {
-        return $q.resolve(userInfo);
-      }
-      return $http.get(
-        '/userinfohandler'
-      ).then(function(response) {
-        if (response.data.user_is_logged_in) {
-          userInfo = UserInfoObjectFactory.createFromBackendDict(response.data);
-          return $q.resolve(userInfo);
-        } else {
-          return $q.resolve(UserInfoObjectFactory.createDefault());
-        }
-      });
-    };
-
-    return {
-      getProfileImageDataUrlAsync: function() {
-        var profilePictureDataUrl = (
-          UrlInterpolationService.getStaticImageUrl(
-            DEFAULT_PROFILE_IMAGE_PATH));
-        return getUserInfoAsync().then(function(userInfo) {
-          if (userInfo.isLoggedIn()) {
-            return $http.get(
-              '/preferenceshandler/profile_picture'
-            ).then(function(response) {
-              if (response.data.profile_picture_data_url) {
-                profilePictureDataUrl = response.data.profile_picture_data_url;
-              }
-              return profilePictureDataUrl;
-            });
-          } else {
-            return $q.resolve(profilePictureDataUrl);
-          }
-        });
-      },
-      setProfileImageDataUrlAsync: function(newProfileImageDataUrl) {
-        return $http.put(PREFERENCES_DATA_URL, {
-          update_type: 'profile_picture_data_url',
-          data: newProfileImageDataUrl
-        });
-      },
-      getLoginUrlAsync: function() {
-        var urlParameters = {
-          current_url: $window.location.pathname
-        };
-        return $http.get('/url_handler', {params: urlParameters}).then(
-          function(response) {
-            return response.data.login_url;
-          }
-        );
-      },
-      getUserCommunityRightsData: function() {
-        if (userCommunityRightsInfo) {
-          return $q.resolve(userCommunityRightsInfo);
-        } else {
-          return $http.get(USER_COMMUNITY_RIGHTS_DATA_URL).then(
-            function(response) {
-              userCommunityRightsInfo = response.data;
-              return $q.resolve(userCommunityRightsInfo);
-            }
-          );
-        }
-      },
-      getUserInfoAsync: getUserInfoAsync
-    };
+    });
   }
-]);
+
+  getProfileImageDataUrlAsync() {
+    let profilePictureDataUrl = (
+      this.urlInterpolationService.getStaticImageUrl(
+        AppConstants.DEFAULT_PROFILE_IMAGE_PATH));
+    return this.getUserInfoAsync().then((userInfo) => {
+      if (userInfo.isLoggedIn()) {
+        return this.httpClient.get(
+          '/preferenceshandler/profile_picture'
+        ).toPromise().then((response: any) => {
+          if (response.data.profile_picture_data_url) {
+            profilePictureDataUrl = response.data.profile_picture_data_url;
+          }
+          return profilePictureDataUrl;
+        });
+      } else {
+        return Promise.resolve(profilePictureDataUrl);
+      }
+    });
+  }
+
+  setProfileImageDataUrlAsync(newProfileImageDataUrl) {
+    return this.httpClient.put(this.PREFERENCES_DATA_URL, {
+      update_type: 'profile_picture_data_url',
+      data: newProfileImageDataUrl
+    }).toPromise();
+  }
+
+  getLoginUrlAsync() {
+    let urlParameters = {
+      current_url: this.windowRef.nativeWindow.location.pathname
+    };
+    return this.httpClient.get('/url_handler', {params: urlParameters}).toPromise().then(
+      (response: any) => {
+        return response.data.login_url;
+      }
+    );
+  }
+
+  getUserCommunityRightsData(): Promise<Object> {
+    if (this.userCommunityRightsInfo) {
+      return Promise.resolve(this.userCommunityRightsInfo);
+    } else {
+      return this.httpClient.get(
+        this.USER_COMMUNITY_RIGHTS_DATA_URL).toPromise().then(
+        (response: any) => {
+          this.userCommunityRightsInfo = response.data;
+          return Promise.resolve(this.userCommunityRightsInfo);
+        }
+      );
+    }
+  }
+}
+
+angular.module('oppia').factory(
+  'UserService', downgradeInjectable(UserService));
