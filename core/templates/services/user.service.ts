@@ -55,9 +55,9 @@ export class UserService {
     return this.httpClient.get(
       '/userinfohandler'
     ).toPromise().then((response: any) => {
-      if (response.data.user_is_logged_in) {
+      if (response.user_is_logged_in) {
         this.userInfo = (
-          this.userInfoObjectFactory.createFromBackendDict(response.data));
+          this.userInfoObjectFactory.createFromBackendDict(response));
         return Promise.resolve(this.userInfo);
       } else {
         return Promise.resolve(this.userInfoObjectFactory.createDefault());
@@ -75,8 +75,8 @@ export class UserService {
           this.httpClient.get(
             '/preferenceshandler/profile_picture'
           ).toPromise().then((response: any) => {
-            if (response.data.profile_picture_data_url) {
-              profilePictureDataUrl = response.data.profile_picture_data_url;
+            if (response.profile_picture_data_url) {
+              profilePictureDataUrl = response.profile_picture_data_url;
             }
             return resolve(profilePictureDataUrl);
           });
@@ -100,7 +100,7 @@ export class UserService {
     };
     return this.httpClient.get('/url_handler', {params: urlParameters}).toPromise().then(
       (response: any) => {
-        return response.data.login_url;
+        return response.login_url;
       }
     );
   }
@@ -113,7 +113,7 @@ export class UserService {
         return this.httpClient.get(
           this.USER_COMMUNITY_RIGHTS_DATA_URL).toPromise().then(
           (response: any) => {
-            this.userCommunityRightsInfo = response.data;
+            this.userCommunityRightsInfo = response;
             return resolve(this.userCommunityRightsInfo);
           }
         );
