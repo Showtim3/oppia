@@ -192,9 +192,9 @@ angular.module('oppia').directive('signupPage', [
               keyboard: false,
               resolve: {},
               controller: [
-                '$scope', '$uibModalInstance', 'SiteAnalyticsService',
+                '$rootScope','$scope', '$uibModalInstance', 'SiteAnalyticsService',
                 'UserService', '$window',
-                function($scope, $uibModalInstance, SiteAnalyticsService,
+                function($rootScope,$scope, $uibModalInstance, SiteAnalyticsService,
                     UserService, $window) {
                   $scope.continueRegistration = function() {
                     UserService.getLoginUrlAsync().then(
@@ -206,6 +206,7 @@ angular.module('oppia').directive('signupPage', [
                         } else {
                           $window.location.reload();
                         }
+                        $rootScope.$apply();
                       }
                     );
                     $uibModalInstance.dismiss('cancel');

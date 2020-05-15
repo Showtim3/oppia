@@ -104,7 +104,7 @@ angular.module('oppia').config([
       'SolutionObjectFactory', 'StateCardObjectFactory',
       'StateImprovementSuggestionService', 'StateObjectFactory',
       'StatesObjectFactory', 'TextInputRulesService', 'UrlInterpolationService',
-      'UrlService', 'UserInfoObjectFactory', 'UtilsService',
+      'UrlService', 'UserInfoObjectFactory', 'UserService', 'UtilsService',
       'ValidatorsService', 'WindowDimensionsService', 'WindowRef'];
     for (let [key, value] of Object.entries(ugs.getUpgradedServices())) {
       if (servicesToProvide.includes(key)) {

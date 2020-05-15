@@ -53,7 +53,7 @@ angular.module('oppia').directive('learnerDashboardPage', [
         '/pages/learner-dashboard-page/learner-dashboard-page.directive.html'),
       controllerAs: '$ctrl',
       controller: [
-        '$scope', '$q', '$window', '$http', '$uibModal', 'AlertsService',
+        '$rootScope','$scope', '$q', '$window', '$http', '$uibModal', 'AlertsService',
         'LoaderService', 'EXPLORATIONS_SORT_BY_KEYS_AND_I18N_IDS',
         'ACTIVITY_TYPE_COLLECTION', 'ACTIVITY_TYPE_EXPLORATION',
         'SUBSCRIPTION_SORT_BY_KEYS_AND_I18N_IDS', 'FATAL_ERROR_CODES',
@@ -65,7 +65,7 @@ angular.module('oppia').directive('learnerDashboardPage', [
         'FeedbackMessageSummaryObjectFactory',
         'SuggestionModalForLearnerDashboardService', 'UserService',
         function(
-            $scope, $q, $window, $http, $uibModal, AlertsService,
+            $rootScope,$scope, $q, $window, $http, $uibModal, AlertsService,
             LoaderService, EXPLORATIONS_SORT_BY_KEYS_AND_I18N_IDS,
             ACTIVITY_TYPE_COLLECTION, ACTIVITY_TYPE_EXPLORATION,
             SUBSCRIPTION_SORT_BY_KEYS_AND_I18N_IDS, FATAL_ERROR_CODES,
@@ -489,6 +489,7 @@ angular.module('oppia').directive('learnerDashboardPage', [
             ctrl.Math = window.Math;
             UserService.getProfileImageDataUrlAsync().then(function(dataUrl) {
               ctrl.profilePictureDataUrl = dataUrl;
+              $rootScope.$apply();
             });
 
             LoaderService.showLoadingScreen('Loading');
@@ -496,6 +497,7 @@ angular.module('oppia').directive('learnerDashboardPage', [
             var userInfoPromise = UserService.getUserInfoAsync();
             userInfoPromise.then(function(userInfo) {
               ctrl.username = userInfo.getUsername();
+              $rootScope.$apply();
             });
 
             var dashboardDataPromise = (

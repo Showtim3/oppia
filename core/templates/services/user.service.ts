@@ -51,10 +51,12 @@ export class UserService {
         resolve(this.userInfoObjectFactory.createDefault());
       }
       if (this.userInfo) {
+        console.log('getUserInfoAsync', this.userInfo);
         resolve(this.userInfo);
       }
       return this.httpClient.get('/userinfohandler').toPromise().then((response: any) => {
         if (response.user_is_logged_in) {
+          console.log('Logged in', response);
           this.userInfo = (
             this.userInfoObjectFactory.createFromBackendDict(response));
           resolve(this.userInfo);
@@ -72,15 +74,18 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this.getUserInfoAsync().then((userInfo) => {
         if (userInfo.isLoggedIn()) {
+          console.log('Inside if');
           this.httpClient.get(
             '/preferenceshandler/profile_picture'
           ).toPromise().then((response: any) => {
             if (response.profile_picture_data_url) {
               profilePictureDataUrl = response.profile_picture_data_url;
             }
+            console.log('First call', response);
             resolve(profilePictureDataUrl);
           });
         } else {
+          console.log('Inside ELse');
           resolve(profilePictureDataUrl);
         }
       });

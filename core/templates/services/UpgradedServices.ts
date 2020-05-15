@@ -305,6 +305,7 @@ import { WrittenTranslationObjectFactory } from
   'domain/exploration/WrittenTranslationObjectFactory';
 import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
+import {UserService} from 'services/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -667,6 +668,13 @@ export class UpgradedServices {
       upgradedServices['SkillSummaryObjectFactory']);
 
     // Topological level: 4.
+    upgradedServices['UserService'] = new UserService(
+      upgradedServices['HttpClient'],
+      upgradedServices['UrlService'],
+      upgradedServices['UrlInterpolationService'],
+      upgradedServices['UserInfoObjectFactory'],
+      upgradedServices['WindowRef']
+    );
     upgradedServices['PredictionAlgorithmRegistryService'] =
       new PredictionAlgorithmRegistryService(
         upgradedServices['CodeReplPredictionService'],
