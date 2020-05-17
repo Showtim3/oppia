@@ -12,20 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {downgradeInjectable} from '@angular/upgrade/static';
-import {Injectable} from '@angular/core';
-
-import {UrlInterpolationService} from 'domain/utilities/url-interpolation.service';
-import {HttpClient} from '@angular/common/http';
-import {UserInfoObjectFactory} from 'domain/user/UserInfoObjectFactory';
-import {UrlService} from 'services/contextual/url.service';
-import {WindowRef} from 'services/contextual/window-ref.service';
-import {AppConstants} from 'app.constants';
-
-
 /**
  * @fileoverview Service for user data.
  */
+
+import { downgradeInjectable } from '@angular/upgrade/static';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { AppConstants } from 'app.constants';
+import { UrlInterpolationService } from
+  'domain/utilities/url-interpolation.service';
+import { UrlService } from 'services/contextual/url.service';
+import { UserInfo, UserInfoObjectFactory } from
+  'domain/user/UserInfoObjectFactory';
+import { WindowRef } from 'services/contextual/window-ref.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +36,7 @@ export class UserService {
   PREFERENCES_DATA_URL = '/preferenceshandler/data';
   USER_COMMUNITY_RIGHTS_DATA_URL = '/usercommunityrightsdatahandler';
 
-  userInfo = null;
+  userInfo: UserInfo = null;
   userCommunityRightsInfo = null;
 
   constructor(
@@ -45,18 +47,19 @@ export class UserService {
       private windowRef: WindowRef
   ) {}
 
-  getUserInfoAsync():Promise<any> {
+  getUserInfoAsync(): Promise<UserInfo> {
     return new Promise((resolve, reject) => {
       if (this.urlService.getPathname() === '/signup') {
         resolve(this.userInfoObjectFactory.createDefault());
+        return;
       }
       if (this.userInfo) {
-        console.log('getUserInfoAsync', this.userInfo);
         resolve(this.userInfo);
+        return;
       }
-      return this.httpClient.get('/userinfohandler').toPromise().then((response: any) => {
+      this.httpClient.get(
+        '/userinfohandler').toPromise().then((response: any) => {
         if (response.user_is_logged_in) {
-          console.log('Logged in', response);
           this.userInfo = (
             this.userInfoObjectFactory.createFromBackendDict(response));
           resolve(this.userInfo);
@@ -71,39 +74,39 @@ export class UserService {
     let profilePictureDataUrl = (
       this.urlInterpolationService.getStaticImageUrl(
         AppConstants.DEFAULT_PROFILE_IMAGE_PATH));
+
     return new Promise((resolve, reject) => {
       this.getUserInfoAsync().then((userInfo) => {
         if (userInfo.isLoggedIn()) {
-          console.log('Inside if');
-          this.httpClient.get(
+          return this.httpClient.get(
             '/preferenceshandler/profile_picture'
           ).toPromise().then((response: any) => {
             if (response.profile_picture_data_url) {
               profilePictureDataUrl = response.profile_picture_data_url;
             }
-            console.log('First call', response);
             resolve(profilePictureDataUrl);
           });
         } else {
-          console.log('Inside ELse');
           resolve(profilePictureDataUrl);
         }
       });
     });
   }
 
-  setProfileImageDataUrlAsync(newProfileImageDataUrl) {
+  setProfileImageDataUrlAsync(newProfileImageDataUrl): Promise<Object> {
+    console.log(newProfileImageDataUrl);
     return this.httpClient.put(this.PREFERENCES_DATA_URL, {
       update_type: 'profile_picture_data_url',
       data: newProfileImageDataUrl
     }).toPromise();
   }
 
-  getLoginUrlAsync() {
+  getLoginUrlAsync(): Promise<Object> {
     let urlParameters = {
       current_url: this.windowRef.nativeWindow.location.pathname
     };
-    return this.httpClient.get('/url_handler', {params: urlParameters}).toPromise().then(
+    return this.httpClient.get(
+      '/url_handler', {params: urlParameters}).toPromise().then(
       (response: any) => {
         return response.login_url;
       }

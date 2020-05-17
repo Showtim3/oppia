@@ -66,6 +66,7 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(
       request: HttpRequest<any>, next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    console.log('Intercept triggered');
     var csrf = this.csrf;
     try {
       csrf.initializeToken();
