@@ -19,10 +19,7 @@
 var forms = require('../protractor_utils/forms.js');
 var general = require('../protractor_utils/general.js');
 var users = require('../protractor_utils/users.js');
-var waitFor = require('../protractor_utils/waitFor.js');
-var workflow = require('../protractor_utils/workflow.js');
 
-var AdminPage = require('../protractor_utils/AdminPage.js');
 var ExplorationEditorPage = require(
   '../protractor_utils/ExplorationEditorPage.js');
 var TopicsAndSkillsDashboardPage = require(
@@ -55,12 +52,46 @@ describe('Topics and skills dashboard functionality', function() {
     topicsAndSkillsDashboardPage.get();
   });
 
-  it('should add a new topic to list', function() {
+  it('should add a new topic to list and delete it', function() {
     topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(0);
-    topicsAndSkillsDashboardPage.createTopic('Topic 1', true);
+    topicsAndSkillsDashboardPage.createTopic(
+      'Topic 1', 'Topic 1 description', 'Mathematics', true);
 
     topicsAndSkillsDashboardPage.get();
     topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(1);
+    topicsAndSkillsDashboardPage.deleteTopicWithIndex(0);
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(0);
+  });
+
+  it('should filter the topics', function() {
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(0);
+    topicsAndSkillsDashboardPage.createTopic(
+      'Alpha', 'Alpha description', 'Mathematics', true);
+    topicsAndSkillsDashboardPage.get();
+    topicsAndSkillsDashboardPage.createTopic(
+      'Beta', 'Beta description', 'Mathematics', true);
+
+    topicsAndSkillsDashboardPage.get();
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(2);
+    topicsAndSkillsDashboardPage.filterTopicsByKeyword('alp');
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(1);
+    topicsAndSkillsDashboardPage.resetTopicFilters();
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(2);
+
+    topicsAndSkillsDashboardPage.filterTopicsByKeyword('be');
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(1);
+    topicsAndSkillsDashboardPage.resetTopicFilters();
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(2);
+
+    topicsAndSkillsDashboardPage.filterTopicsByCategory('Mathematics');
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(2);
+    topicsAndSkillsDashboardPage.resetTopicFilters();
+
+    topicsAndSkillsDashboardPage.filterTopicsByKeyword('gamma');
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(0);
+    topicsAndSkillsDashboardPage.resetTopicFilters();
+
+    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(2);
   });
 
   it('should move published skill to unused skills section', function() {
@@ -122,14 +153,6 @@ describe('Topics and skills dashboard functionality', function() {
     topicsAndSkillsDashboardPage.get();
     topicsAndSkillsDashboardPage.navigateToUnusedSkillsTab();
     topicsAndSkillsDashboardPage.expectNumberOfSkillsToBe(0);
-  });
-
-  it('should remove a topic from list once deleted', function() {
-    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(1);
-    topicsAndSkillsDashboardPage.deleteTopicWithIndex(0);
-
-    topicsAndSkillsDashboardPage.get();
-    topicsAndSkillsDashboardPage.expectNumberOfTopicsToBe(0);
   });
 
   afterEach(function() {

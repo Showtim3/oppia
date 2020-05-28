@@ -65,7 +65,7 @@ class TopicMigrationOneOffJobTests(test_utils.GenericTestBase):
         # Create a new topic that should not be affected by the
         # job.
         topic = topic_domain.Topic.create_default_topic(
-            self.TOPIC_ID, name='A name', abbreviated_name='abbrev')
+            self.TOPIC_ID, 'A name', 'abbrev', 'description', 'Mathematics')
         topic.add_subtopic(1, title='A subtitle')
         topic_services.save_new_topic(self.albert_id, topic)
         self.assertEqual(
@@ -97,7 +97,7 @@ class TopicMigrationOneOffJobTests(test_utils.GenericTestBase):
         and does not attempt to migrate.
         """
         topic = topic_domain.Topic.create_default_topic(
-            self.TOPIC_ID, name='A name', abbreviated_name='abbrev')
+            self.TOPIC_ID, 'A name', 'abbrev', 'description', 'Mathematics')
         topic_services.save_new_topic(self.albert_id, topic)
 
         # Delete the topic before migration occurs.
@@ -134,7 +134,7 @@ class TopicMigrationOneOffJobTests(test_utils.GenericTestBase):
         # Generate topic with old(v1) subtopic data.
         self.save_new_topic_with_subtopic_schema_v1(
             self.TOPIC_ID, self.albert_id, 'A name', 'abbrev',
-            'a name', '', 'Image.svg', '#C6DCDA', [], [], [], 2)
+            'a name', '', 'Mathematics', 'Image.svg', '#C6DCDA', [], [], [], 2)
         topic_model = (
             topic_models.TopicModel.get(self.TOPIC_ID))
         self.assertEqual(topic_model.subtopic_schema_version, 1)
@@ -186,7 +186,8 @@ class TopicMigrationOneOffJobTests(test_utils.GenericTestBase):
         # The topic model created will be invalid due to invalid language code.
         self.save_new_topic_with_subtopic_schema_v1(
             self.TOPIC_ID, self.albert_id, 'A name', 'abbrev',
-            'a name', '', 'Image.svg', '#C6DCDA', [], [], [], 2,
+            'a name', 'description', 'Mathematics', 'Image.svg',
+            '#C6DCDA', [], [], [], 2,
             language_code='invalid_language_code')
 
         job_id = (
@@ -245,7 +246,7 @@ class RemoveDeletedSkillsFromTopicOneOffJobTests(
         # Create a new topic that should not be affected by the
         # job.
         topic = topic_domain.Topic.create_default_topic(
-            self.TOPIC_ID, name='A name', abbreviated_name='abbrev')
+            self.TOPIC_ID, 'A name', 'abbrev', 'description', 'Mathematics')
         topic.add_subtopic(1, title='A subtitle')
         topic.add_uncategorized_skill_id('valid_skill_1')
         topic.add_uncategorized_skill_id('valid_skill_2')
@@ -305,7 +306,7 @@ class RemoveDeletedSkillsFromTopicOneOffJobTests(
         skills that are deleted.
         """
         topic = topic_domain.Topic.create_default_topic(
-            self.TOPIC_ID, name='A name', abbreviated_name='abbrev')
+            self.TOPIC_ID, 'A name', 'abbrev', 'description', 'Mathematics')
         topic.add_uncategorized_skill_id('skill_1')
         topic.add_uncategorized_skill_id('skill_2')
         topic_services.save_new_topic(self.albert_id, topic)

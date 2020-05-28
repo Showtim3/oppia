@@ -29,17 +29,27 @@ var TopicsAndSkillsDashboardPage = function() {
     by.css('.protractor-test-skill-description'));
   var createTopicButton = element(
     by.css('.protractor-test-create-topic-button'));
-  var deleteTopicButtons = element.all(
-    by.css('.protractor-test-delete-topic-button'));
   var createSkillButton = element(
     by.css('.protractor-test-create-skill-button'));
   var deleteSkillButtons = element.all(
     by.css('.protractor-test-delete-skill-button'));
+  var topicsTable = element(by.css('.protractor-test-topics-table'));
   var topicsListItems = element.all(
     by.css('.protractor-test-topics-list-item'));
   var skillsListItems = element.all(
     by.css('.protractor-test-skills-list-item'));
-  var topicNameField = element(by.css('.protractor-test-new-topic-name-field'));
+  var topicNameField = element(by.css(
+    '.protractor-test-new-topic-name-field'));
+  var topicDescriptionField = element(by.css(
+    '.protractor-test-new-topic-description-field'));
+  var topicCategoryField = element(by.css(
+    '.protractor-test-new-topic-category-field'));
+  var topicFilterKeywordField = element(by.css(
+    '.protractor-test-select-keyword-dropdown'));
+  var topicFilterCategoryField = element(by.css(
+    '.protractor-test-topic-filter-category'));
+  var topicResetFilters = element(by.css(
+    '.protractor-test-topic-filter-reset'));
   var skillNameField = element(
     by.css('.protractor-test-new-skill-description-field')
   );
@@ -104,8 +114,19 @@ var TopicsAndSkillsDashboardPage = function() {
     });
 
   this.navigateToTopicWithIndex = function(index) {
-    topicsListItems.then(function(elems) {
-      elems[index].click();
+    waitFor.visibilityOf(topicsTable,
+      'Topic table taking too long to appear.');
+    element.all(
+      by.css('.protractor-test-topic-edit-box')).then((elems) => {
+      var editTopicButton = element(
+        by.css('.protractor-test-edit-topic-button'));
+      var topicEditOptionBox = elems[index];
+      browser.actions().mouseMove(topicEditOptionBox).perform();
+      waitFor.elementToBeClickable(
+        editTopicButton,
+        'Edit Topic button takes too long to be clickable');
+      editTopicButton.click();
+      waitFor.pageToFullyLoad();
     });
   };
 
@@ -138,7 +159,8 @@ var TopicsAndSkillsDashboardPage = function() {
     });
   };
 
-  this.createTopic = function(topicName, shouldCloseTopicEditor) {
+  this.createTopic = function(
+      topicName, description, category, shouldCloseTopicEditor) {
     var initialHandles = [];
     return browser.getAllWindowHandles().then(function(handles) {
       initialHandles = handles;
@@ -148,8 +170,10 @@ var TopicsAndSkillsDashboardPage = function() {
         createTopicButton,
         'Create Topic button takes too long to be clickable');
       createTopicButton.click();
-
       topicNameField.sendKeys(topicName);
+      topicDescriptionField.sendKeys(description);
+      topicCategoryField.click();
+      browser.driver.switchTo().activeElement().sendKeys(category + '\n');
       confirmTopicCreationButton.click();
 
       waitFor.newTabToBeCreated(
@@ -168,20 +192,56 @@ var TopicsAndSkillsDashboardPage = function() {
     });
   };
 
-  this.deleteTopicWithIndex = function(index) {
-    deleteTopicButtons.then(function(elems) {
-      waitFor.elementToBeClickable(
-        elems[0],
-        'Delete Topic button takes too long to be clickable');
-      elems[0].click();
+  this.filterTopicsByKeyword = function(keyword) {
+    waitFor.visibilityOf(
+      topicFilterKeywordField,
+      'Topic Dashboard keyword filter parent taking too long to appear.');
+    var filterKeywordInput = topicFilterKeywordField.element(
+      by.css('.select2-search__field'));
+    waitFor.visibilityOf(
+      filterKeywordInput,
+      'Topic Dashboard keyword filter taking too long to appear.');
 
+    filterKeywordInput.click();
+    filterKeywordInput.sendKeys(keyword);
+    filterKeywordInput.sendKeys(protractor.Key.RETURN);
+  };
+
+  this.filterTopicsByCategory = function(keyword) {
+    waitFor.visibilityOf(
+      topicFilterCategoryField,
+      'Topic Dashboard category taking too long to appear.');
+
+    topicFilterCategoryField.click();
+    browser.driver.switchTo().activeElement().sendKeys(keyword + '\n');
+  };
+
+  this.resetTopicFilters = function() {
+    waitFor.visibilityOf(
+      topicResetFilters, 'Reset button taking too long to be clickable');
+    topicResetFilters.click();
+  };
+
+  this.deleteTopicWithIndex = function(index) {
+    waitFor.visibilityOf(topicsTable,
+      'Topic table taking too long to appear.');
+    element.all(
+      by.css('.protractor-test-topic-edit-box')).then((elems) => {
+      var deleteTopicButton = element(
+        by.css('.protractor-test-delete-topic-button'));
+      var topicEditOptionBox = elems[index];
+      browser.actions().mouseMove(topicEditOptionBox).perform();
+      waitFor.elementToBeClickable(
+        deleteTopicButton,
+        'Delete Topic button takes too long to be clickable');
+      deleteTopicButton.click();
       waitFor.elementToBeClickable(
         confirmTopicDeletionButton,
         'Confirm Delete Topic button takes too long to be clickable');
       confirmTopicDeletionButton.click();
+      this.get();
+      waitFor.pageToFullyLoad();
     });
-
-    waitFor.pageToFullyLoad();
   };
 
   this.deleteSkillWithIndex = function(index) {
@@ -273,16 +333,16 @@ var TopicsAndSkillsDashboardPage = function() {
   };
 
   this.editTopic = function(topicName) {
-    waitFor.elementToBeClickable(
-      topicsTabButton, 'Unable to click on topics tab.');
-    _getTopicElements(topicName).then(function(topicElements) {
-      if (topicElements.length === 0) {
-        throw new Error('Could not find topic tile with name ' + topicName);
-      }
-      waitFor.elementToBeClickable(
-        topicElements[0], 'Unable to click on topic: ' + topicName);
-      topicElements[0].click();
-      waitFor.pageToFullyLoad();
+    waitFor.visibilityOf(topicsTable,
+      'Topic table taking too long to appear.');
+    topicNames.then((topics)=> {
+      topics.forEach((topic, index) => {
+        topic.getText().then((name) => {
+          if (topicName === name) {
+            this.navigateToTopicWithIndex(index);
+          }
+        });
+      });
     });
   };
 
