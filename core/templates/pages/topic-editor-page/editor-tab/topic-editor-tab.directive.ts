@@ -20,6 +20,8 @@ require(
   'components/common-layout-directives/common-elements/' +
   'confirm-or-cancel-modal.controller.ts');
 require(
+  'components/forms/custom-forms-directives/select2-dropdown.directive.ts');
+require(
   'components/forms/custom-forms-directives/thumbnail-uploader.directive.ts');
 
 require('components/entity-creation-services/story-creation.service.ts');
@@ -50,17 +52,17 @@ angular.module('oppia').directive('topicEditorTab', [
         'ContextService', 'CsrfTokenService', 'ImageUploadHelperService',
         'TopicEditorStateService', 'TopicUpdateService', 'UndoRedoService',
         'UrlInterpolationService', 'StoryCreationService',
-        'EVENT_STORY_SUMMARIES_INITIALIZED', 'EVENT_TOPIC_INITIALIZED',
-        'EVENT_TOPIC_REINITIALIZED', 'MAX_CHARS_IN_TOPIC_DESCRIPTION',
-        'MAX_CHARS_IN_TOPIC_NAME',
+        'ALLOWED_TOPIC_CATEGORIES', 'EVENT_STORY_SUMMARIES_INITIALIZED',
+        'EVENT_TOPIC_INITIALIZED', 'EVENT_TOPIC_REINITIALIZED',
+        'MAX_CHARS_IN_TOPIC_DESCRIPTION', 'MAX_CHARS_IN_TOPIC_NAME',
         function(
             $scope, $uibModal, AlertsService,
             ContextService, CsrfTokenService, ImageUploadHelperService,
             TopicEditorStateService, TopicUpdateService, UndoRedoService,
             UrlInterpolationService, StoryCreationService,
-            EVENT_STORY_SUMMARIES_INITIALIZED, EVENT_TOPIC_INITIALIZED,
-            EVENT_TOPIC_REINITIALIZED, MAX_CHARS_IN_TOPIC_DESCRIPTION,
-            MAX_CHARS_IN_TOPIC_NAME) {
+            ALLOWED_TOPIC_CATEGORIES, EVENT_STORY_SUMMARIES_INITIALIZED,
+            EVENT_TOPIC_INITIALIZED, EVENT_TOPIC_REINITIALIZED,
+            MAX_CHARS_IN_TOPIC_DESCRIPTION, MAX_CHARS_IN_TOPIC_NAME) {
           var ctrl = this;
           $scope.MAX_CHARS_IN_TOPIC_NAME = MAX_CHARS_IN_TOPIC_NAME;
           $scope.MAX_CHARS_IN_TOPIC_DESCRIPTION = (
@@ -121,6 +123,15 @@ angular.module('oppia').directive('topicEditorTab', [
             $scope.topicNameEditorIsShown = false;
           };
 
+          $scope.updateTopicCategory = function(newCategory) {
+            if (newCategory === $scope.topic.getCategory()) {
+              return;
+            }
+            TopicUpdateService.setTopicCategory($scope.topic, newCategory);
+            $scope.topicNameEditorIsShown = false;
+          };
+
+
           $scope.updateAbbreviatedName = function(newAbbreviatedName) {
             if (newAbbreviatedName === $scope.topic.getAbbreviatedName()) {
               return;
@@ -156,6 +167,7 @@ angular.module('oppia').directive('topicEditorTab', [
             $scope.$on(EVENT_TOPIC_INITIALIZED, _initEditor);
             $scope.$on(EVENT_TOPIC_REINITIALIZED, _initEditor);
             $scope.$on(EVENT_STORY_SUMMARIES_INITIALIZED, _initStorySummaries);
+            $scope.categories = ALLOWED_TOPIC_CATEGORIES;
 
             _initEditor();
             _initStorySummaries();

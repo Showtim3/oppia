@@ -1,18 +1,15 @@
 <div role="form" class="form-horizontal topic-editor">
   <md-card class="oppia-page-card oppia-long-text">
-    <label class="form-heading">Topic Thumbnail</label>
-    <thumbnail-uploader disabled="!topicRights.canEditTopic()"
-                        filename="topic.getThumbnailFilename()"
-                        update-filename="updateTopicThumbnailFilename"
-                        bg-color="topic.getThumbnailBgColor()"
-                        update-bg-color="updateTopicThumbnailBgColor"
-                        allowed-bg-colors="allowedBgColors"
-                        aspect-ratio="'4:3'"
-                        preview-title="editableName"
-                        preview-description=""
-                        preview-description-bg-color="'#2F6687'"
-                        preview-footer="topic.getCanonicalStoryIds().length + ' Lessons'">
-    </thumbnail-uploader>
+    <div>
+      <div class="form-heading">Category</div>
+      <select2-dropdown class="protractor-test-edit-topic-category-field"
+                        item="topic.category"
+                        choices="categories"
+                        placeholder="Choose a category"
+                        on-selection-change="updateTopicCategory(topic.category)"
+                        width="60%">
+      </select2-dropdown>
+    </div>
 
     <div class="topic-name">
       <label for="topicName" class="form-heading">Topic Name</label>
@@ -61,6 +58,20 @@
         Click on Create Story to create a new canonical story for the topic
       </h4>
     </div>
+
+    <label class="form-heading">Topic Thumbnail</label>
+    <thumbnail-uploader disabled="!topicRights.canEditTopic()"
+                        filename="topic.getThumbnailFilename()"
+                        update-filename="updateTopicThumbnailFilename"
+                        bg-color="topic.getThumbnailBgColor()"
+                        update-bg-color="updateTopicThumbnailBgColor"
+                        allowed-bg-colors="allowedBgColors"
+                        aspect-ratio="'4:3'"
+                        preview-title="editableName"
+                        preview-description=""
+                        preview-description-bg-color="'#2F6687'"
+                        preview-footer="topic.getCanonicalStoryIds().length + ' Lessons'">
+    </thumbnail-uploader>
   </md-card>
 </div>
 

@@ -40,6 +40,7 @@ angular.module('oppia').factory('TopicUpdateService', [
   'SUBTOPIC_PROPERTY_THUMBNAIL_FILENAME', 'SUBTOPIC_PROPERTY_TITLE',
   'TOPIC_PROPERTY_ABBREVIATED_NAME', 'TOPIC_PROPERTY_DESCRIPTION',
   'TOPIC_PROPERTY_LANGUAGE_CODE', 'TOPIC_PROPERTY_NAME',
+  'TOPIC_PROPERTY_CATEGORY',
   'TOPIC_PROPERTY_THUMBNAIL_BG_COLOR',
   'TOPIC_PROPERTY_THUMBNAIL_FILENAME', function(
       ChangeObjectFactory, UndoRedoService,
@@ -54,6 +55,7 @@ angular.module('oppia').factory('TopicUpdateService', [
       SUBTOPIC_PROPERTY_THUMBNAIL_FILENAME, SUBTOPIC_PROPERTY_TITLE,
       TOPIC_PROPERTY_ABBREVIATED_NAME, TOPIC_PROPERTY_DESCRIPTION,
       TOPIC_PROPERTY_LANGUAGE_CODE, TOPIC_PROPERTY_NAME,
+      TOPIC_PROPERTY_CATEGORY,
       TOPIC_PROPERTY_THUMBNAIL_BG_COLOR,
       TOPIC_PROPERTY_THUMBNAIL_FILENAME) {
     // Creates a change using an apply function, reverse function, a change
@@ -206,6 +208,24 @@ angular.module('oppia').factory('TopicUpdateService', [
           }, function(changeDict, topic) {
             // Undo.
             topic.setDescription(oldDescription);
+          });
+      },
+
+      /**
+       * Changes the category of a topic and records the change in the
+       * undo/redo service.
+       */
+      setTopicCategory: function(topic, category) {
+        var oldCategory = angular.copy(topic.getCategory());
+        _applyTopicPropertyChange(
+          topic, TOPIC_PROPERTY_CATEGORY, category, oldCategory,
+          function(changeDict, topic) {
+            // Apply
+            var category = _getNewPropertyValueFromChangeDict(changeDict);
+            topic.setCategory(category);
+          }, function(changeDict, topic) {
+            // Undo.
+            topic.setCategory(oldCategory);
           });
       },
 

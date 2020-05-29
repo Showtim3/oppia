@@ -41,6 +41,7 @@ interface ITopicBackendDict {
   'name': string;
   'abbreviated_name': string;
   'description': string;
+  'category': string;
   'language_code': string;
   'uncategorized_skill_ids': string[];
   'next_subtopic_id': number;
@@ -57,6 +58,7 @@ export class Topic {
   _name: string;
   _abbreviatedName: string;
   _description: string;
+  _category: string;
   _languageCode: string;
   _canonicalStoryReferences: Array<StoryReference>;
   _additionalStoryReferences: Array<StoryReference>;
@@ -71,7 +73,8 @@ export class Topic {
   storyReferenceObjectFactory: StoryReferenceObjectFactory;
   constructor(
       id: string, name: string, abbreviatedName: string, description: string,
-      languageCode: string, canonicalStoryReferences: Array<StoryReference>,
+      category: string, languageCode: string,
+      canonicalStoryReferences: Array<StoryReference>,
       additionalStoryReferences: Array<StoryReference>,
       uncategorizedSkillIds: Array<string>,
       nextSubtopicId: number, version: number, subtopics: Array<Subtopic>,
@@ -85,6 +88,7 @@ export class Topic {
     this._name = name;
     this._abbreviatedName = abbreviatedName;
     this._description = description;
+    this._category = category;
     this._languageCode = languageCode;
     this._canonicalStoryReferences = canonicalStoryReferences;
     this._additionalStoryReferences = additionalStoryReferences;
@@ -114,6 +118,14 @@ export class Topic {
 
   setName(name: string): void {
     this._name = name;
+  }
+
+  getCategory(): string {
+    return this._category;
+  }
+
+  setCategory(name: string): void {
+    this._category = name;
   }
 
   getAbbreviatedName(): string {
@@ -494,7 +506,9 @@ export class TopicObjectFactory {
     return new Topic(
       topicBackendDict.id, topicBackendDict.name,
       topicBackendDict.abbreviated_name,
-      topicBackendDict.description, topicBackendDict.language_code,
+      topicBackendDict.description,
+      topicBackendDict.category,
+      topicBackendDict.language_code,
       canonicalStoryReferences, additionalStoryReferences,
       topicBackendDict.uncategorized_skill_ids,
       topicBackendDict.next_subtopic_id, topicBackendDict.version,
@@ -510,7 +524,8 @@ export class TopicObjectFactory {
   createInterstitialTopic(): Topic {
     return new Topic(
       null, 'Topic name loading', 'Topic abbreviated name loading',
-      'Topic description loading', 'en', [], [], [], 1, 1, [], '', '', {},
+      'Topic description loading', '', 'en',
+      [], [], [], 1, 1, [], '', '', {},
       this.skillSummaryObjectFactory, this.subtopicObjectFactory,
       this.storyReferenceObjectFactory
     );

@@ -105,6 +105,7 @@ angular.module('oppia').directive('topicsAndSkillsDashboardPage', [
               function(response) {
                 ctrl.totalTopicSummaries = response.topic_summary_dicts;
                 ctrl.topicSummaries = response.topic_summary_dicts;
+                console.log(response.topic_summary_dicts);
                 ctrl.totalEntityCountToDisplay = ctrl.topicSummaries.length;
                 ctrl.currentCount = ctrl.totalEntityCountToDisplay;
                 ctrl.activeTab = ctrl.TAB_NAME_TOPICS;
