@@ -108,6 +108,7 @@ angular.module('oppia').directive('topicsList', [
                   return topicName;
                 }
               },
+              windowClass: 'deleteTopicModal',
               controller: 'DeleteTopicModalController'
             }).result.then(function() {
               EditableTopicBackendApiService.deleteTopic(topicId).then(

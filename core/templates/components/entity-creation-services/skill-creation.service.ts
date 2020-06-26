@@ -69,6 +69,7 @@ angular.module('oppia').factory('SkillCreationService', [
             '/pages/topics-and-skills-dashboard-page/templates/' +
               'create-new-skill-modal.template.html'),
           backdrop: 'static',
+          windowClass: 'createNewSkill',
           controller: 'CreateNewSkillModalController'
         }).result.then(function(result) {
           if (skillCreationInProgress) {

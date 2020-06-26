@@ -324,6 +324,10 @@ angular.module('oppia').directive('topicsAndSkillsDashboardPage', [
             ctrl.goToPageNumber(0);
           };
 
+          ctrl.toggleFilterBox = function() {
+            ctrl.filterBoxIsShown = !ctrl.filterBoxIsShown;
+          };
+
           ctrl.$onInit = function() {
             ctrl.skillSummaries = [];
             ctrl.TAB_NAME_TOPICS = 'topics';
@@ -338,6 +342,7 @@ angular.module('oppia').directive('topicsAndSkillsDashboardPage', [
             ctrl.lastSkillPage = 0;
             ctrl.selectedIndex = null;
             ctrl.itemsPerPageChoice = [10, 15, 20];
+            ctrl.filterBoxIsShown = false;
             ctrl.filterObject = (
               TopicsAndSkillsDashboardFilterObjectFactory.createDefault());
             ctrl.classrooms = [];

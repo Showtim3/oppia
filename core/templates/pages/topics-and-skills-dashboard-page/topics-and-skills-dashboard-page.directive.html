@@ -15,6 +15,14 @@
       </button>
     </div>
   </div>
+  <div class="create-button-mobile">
+    <div ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_TOPICS">
+      <i class="fa fa-plus-circle" aria-hidden="true" ng-click="$ctrl.createTopic()" ng-if="$ctrl.userCanCreateTopic"></i>
+    </div>
+    <div ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_SKILLS">
+      <i class="fa fa-plus-circle" aria-hidden="true" ng-click="$ctrl.createSkill()" ng-if="$ctrl.userCanCreateSkill"></i>
+    </div>
+  </div>
   <div ng-if="$ctrl.totalTopicSummaries.length > 0 || $ctrl.untriagedSkillSummaries.length > 0">
     <div class="dashboard-content">
       <div class="dashboard-content-primary">
@@ -33,6 +41,12 @@
               </a>
             </li>
           </ul>
+        </div>
+        <div class="filter-mobile-box">
+          <button class="btn btn-default" ng-click="$ctrl.toggleFilterBox()">
+            <span ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_TOPICS">TOPIC FILTERS</span>
+            <span ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_SKILLS">SKILL FILTERS</span>
+          </button>
         </div>
         <div class="dashboard-list">
           <div class="dashboard-list-header" ng-if="$ctrl.topicSummaries.length>0 || $ctrl.skillSummaries.length>0">
@@ -116,11 +130,23 @@
             </div>
           </div>
         </div>
-        <div class="topic-skill-filter">
+        <div class="topic-skill-filter" ng-if="$ctrl.filterBoxIsShown">
           <div class="topic-skill-filter-content">
             <div class="topic-skill-filter-header">
               <span class="topic-skill-filter-heading">Filter</span>
               <span class="topic-skill-filter-reset protractor-test-topic-filter-reset" ng-click="$ctrl.resetFilters()">Reset</span>
+              <i class="fa fa-times dashboard-cross-icon"  ng-click="$ctrl.toggleFilterBox()"></i>
+            </div>
+            <div class="topic-skill-filter-header-mobile">
+              <div class="topic-skill-filter-heading">
+                <span>Filter</span>
+              </div>
+              <div class="topic-skill-filter-action-box">
+                <i class="fa fa-times dashboard-cross-icon"  ng-click="$ctrl.toggleFilterBox()"></i>
+                <div class="topic-skill-filter-action-reset">
+                <span ng-click="$ctrl.resetFilters()">Reset</span>
+                </div>
+              </div>
             </div>
             <div class="topic-skill-filter-row">
               <div class="topic-skill-filter-key">
@@ -252,6 +278,18 @@
   .oppia-topics-and-skills-dashboard .dashboard-list {
     margin: 30px auto;
     width: 95%;
+  }
+  .oppia-topics-and-skills-dashboard .dashboard-cross-icon {
+    display: none;
+  }
+  .oppia-topics-and-skills-dashboard .filter-mobile-box {
+    display: none;
+  }
+  .oppia-topics-and-skills-dashboard .create-button-mobile {
+    display: none;
+  }
+  .oppia-topics-and-skills-dashboard .topic-skill-filter-header-mobile {
+    display: none;
   }
   .oppia-topics-and-skills-dashboard .topic-skill-count {
     align-items: center;
@@ -492,6 +530,115 @@
     .oppia-topics-and-skills-dashboard .dashboard-tabs .sort-explorations-select {
       margin-top: 8px;
       width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .oppia-topics-and-skills-dashboard .dashboard-content {
+      padding-top: 0;
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-content-primary {
+      border: 0;
+      border-radius: 0;
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-content-secondary {
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-tabs li {
+      background-color: #00645C;
+      width: 50%;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-tabs-active .dashboard-tabs-text,
+    .oppia-topics-and-skills-dashboard .dashboard-tabs-active .dashboard-tabs-text:hover {
+      background-color: #00645C;
+      border-bottom: 0;
+      border-radius: 0;
+      color: #FFFFFF;
+    }
+    .oppia-topics-and-skills-dashboard .create-buttons {
+      display: none;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-count {
+      display: none;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter {
+      background-color: #ffffff;
+      border: 0;
+      border-radius: 0;
+      height: 100vh;
+      margin-top: 0;
+      position: absolute;
+      padding-bottom: 0;
+      top: 0;
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .topic-count-value, .skill-count-value {
+      display: block;
+      font-size: 34px;
+      height: 40px;
+    }
+    .oppia-topics-and-skills-dashboard .filter-mobile-box {
+      display: block;
+      text-align: center;
+    }
+    .oppia-topics-and-skills-dashboard .filter-mobile-box button {
+      border: 1px solid #0844aa;
+      margin-top: 10px;
+      width: 70%;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-row {
+      margin: 7vh 0;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-key {
+      font-weight: bold;
+      text-align: left;
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-value {
+      width: 100%;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-list-pagination {
+      display: none;
+    }
+    .oppia-topics-and-skills-dashboard .create-button-mobile {
+      color: #0844aa;
+      display: block;
+    }
+    .oppia-topics-and-skills-dashboard .create-button-mobile i {
+      bottom: 10vh;
+      font-size: 40px;
+      position: fixed;
+      right: 3vw;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-list-header {
+      margin: 0;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-header {
+      display: none;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-header-mobile {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .oppia-topics-and-skills-dashboard .dashboard-cross-icon {
+      color: #000000;
+      display: block;
+      font-size: 20px;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-action-box {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-action-box span {
+      color: #00645C;
+      font-size: 15px;
+    }
+    .oppia-topics-and-skills-dashboard .topic-skill-filter-action-reset {
+      margin-top: 10px;
     }
   }
 </style>

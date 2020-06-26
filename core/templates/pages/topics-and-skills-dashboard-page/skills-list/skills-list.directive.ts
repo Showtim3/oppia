@@ -90,6 +90,7 @@ angular.module('oppia').directive('skillsList', [
                 '/pages/topics-and-skills-dashboard-page/templates/' +
                 'delete-skill-modal.template.html'),
               backdrop: true,
+              windowClass: 'deleteSkillModal',
               controller: 'ConfirmOrCancelModalController'
             }).result.then(function() {
               SkillBackendApiService.deleteSkill(skillId).then(
@@ -117,6 +118,7 @@ angular.module('oppia').directive('skillsList', [
                 '/pages/topics-and-skills-dashboard-page/templates/' +
                 'assign-skill-to-topic-modal.template.html'),
               backdrop: true,
+              windowClass: 'assign-skill-to-topic-modal',
               resolve: {
                 topicSummaries: () => topicSummaries
               },
