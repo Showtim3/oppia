@@ -33,7 +33,7 @@ describe('Topics and skills dashboard functionality', function() {
   var topicEditorPage = null;
   var explorationEditorPage = null;
   var explorationEditorMainTab = null;
-  var UNASSIGNED = 'Unassigned';
+  var SKILL_STATUS_UNASSIGNED = 'Unassigned';
 
   beforeAll(async function() {
     topicsAndSkillsDashboardPage = (
@@ -102,7 +102,8 @@ describe('Topics and skills dashboard functionality', function() {
           'Skill 2', 'Concept card explanation', true);
       await topicsAndSkillsDashboardPage.get();
       await topicsAndSkillsDashboardPage.navigateToSkillsTab();
-      await topicsAndSkillsDashboardPage.filterSkillsByStatus(UNASSIGNED);
+      await topicsAndSkillsDashboardPage.filterSkillsByStatus(
+        SKILL_STATUS_UNASSIGNED);
       await topicsAndSkillsDashboardPage.expectNumberOfSkillsToBe(1);
       await topicsAndSkillsDashboardPage.deleteSkillWithIndex(0);
 
@@ -120,7 +121,6 @@ describe('Topics and skills dashboard functionality', function() {
     await topicsAndSkillsDashboardPage.assignSkillWithIndexToTopic(0, 0);
     await topicsAndSkillsDashboardPage.get();
     await topicsAndSkillsDashboardPage.navigateToTopicWithIndex(0);
-    await topicEditorPage.moveToSubtopicsTab();
     await topicEditorPage.expectNumberOfUncategorizedSkillsToBe(1);
   });
 
@@ -150,7 +150,8 @@ describe('Topics and skills dashboard functionality', function() {
     await general.closeCurrentTabAndSwitchTo(handle);
     await topicsAndSkillsDashboardPage.get();
     await topicsAndSkillsDashboardPage.navigateToSkillsTab();
-    await topicsAndSkillsDashboardPage.filterSkillsByStatus(UNASSIGNED);
+    await topicsAndSkillsDashboardPage.filterSkillsByStatus(
+      SKILL_STATUS_UNASSIGNED);
     await topicsAndSkillsDashboardPage.mergeSkillWithIndexToSkillWithIndex(
       0, 0);
     await topicsAndSkillsDashboardPage.get();
