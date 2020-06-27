@@ -1,9 +1,13 @@
 <div role="form" class="form-horizontal topic-editor">
-  <div class="topic-editor-left">
-    <a ng-href="/topics-and-skills-dashboard">
+    <div class="topic-editor-left">
+    <a ng-href="/topics-and-skills-dashboard" class="topic-dashboard-link-desktop">
       <button class="btn btn-secondary">Back to Topics Dashboard</button>
     </a>
-    <md-card class="oppia-subtopics-list-card oppia-long-text">
+      <a href="/topics-and-skills-dashboard" class="topic-dashboard-link-mobile">
+        <i class="fa fa-angle-left"></i>
+        Back to Topics Dashboard
+      </a>
+    <md-card class="item-list-card oppia-long-text">
       <label class="form-heading">Topic Thumbnail</label>
       <thumbnail-uploader disabled="!topicRights.canEditTopic()"
                           filename="topic.getThumbnailFilename()"
@@ -61,68 +65,110 @@
         </span>
       </div>
     </md-card>
-    <md-card class="oppia-subtopics-list-card">
-      <h3>Subtopics</h3>
-      <button class="btn add-subtopic-btn protractor-test-add-subtopic-button" ng-click="createSubtopic()">
-        + ADD SUBTOPIC
-      </button>
-      <h4 ng-if="subtopics.length === 0" class="add-entity-text">
-        Click on Add Subtopic to create a new subtopic for the topic.
-      </h4>
-      <div ng-if="subtopics.length">
-        <div class="list-header">
-          <span>Name</span>
-          <span># of Skills</span>
-        </div>
-        <div ng-repeat="subtopic in subtopics">
-          <div class="subtopics-list-item">
-            <span class="protractor-test-subtopic" ng-click="navigateToSubtopic(subtopic.getId())"><[subtopic.getTitle()]></span>
-            <span><[subtopic.getSkillSummaries().length]>
-              <button class="btn btn-secondary protractor-test-delete-subtopic-button" ng-click="deleteSubtopic(subtopic.getId())">Delete</button>
-            </span>
+    <md-card class="item-list-card">
+      <div class="item-list-card-header">
+        <h3>Subtopics</h3>
+        <i ng-click="toggleListCards(SUBTOPIC_LIST)"
+           class="fa fa-angle-down"
+           ng-if="!subtopicsListIsShown"
+           aria-hidden="true">
+        </i>
+        <i ng-click="toggleListCards(SUBTOPIC_LIST)"
+           class="fa fa-angle-up"
+           ng-if="subtopicsListIsShown"
+           aria-hidden="true">
+        </i>
+      </div>
+      <div ng-if="subtopicsListIsShown">
+        <button class="btn add-subtopic-btn protractor-test-add-subtopic-button" ng-click="createSubtopic()">
+          + ADD SUBTOPIC
+        </button>
+        <h4 ng-if="subtopics.length === 0" class="add-entity-text">
+          Click on Add Subtopic to create a new subtopic for the topic.
+        </h4>
+        <div ng-if="subtopics.length && subtopicsListIsShown">
+          <div class="list-header">
+            <span>Name</span>
+            <span># of Skills</span>
+          </div>
+          <div ng-repeat="subtopic in subtopics">
+            <div class="subtopics-list-item">
+              <span class="protractor-test-subtopic" ng-click="navigateToSubtopic(subtopic.getId())"><[subtopic.getTitle()]></span>
+              <span><[subtopic.getSkillSummaries().length]>
+                <button class="btn btn-secondary protractor-test-delete-subtopic-button" ng-click="deleteSubtopic(subtopic.getId())">Delete</button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </md-card>
-    <md-card class="oppia-subtopics-list-card">
-      <h3>Skills</h3>
-      <button class="btn add-subtopic-btn" ng-click="createSkill()">
-        + ADD SKILL
-      </button>
-      <h4 ng-if="uncategorizedSkillSummaries.length === 0" class="add-entity-text">
-        Click on Add Skill to create a new skill for the topic.
-      </h4>
-      <div ng-if="uncategorizedSkillSummaries.length">
-        <div class="list-header">
-          <span>Name</span>
-        </div>
-        <div ng-repeat="skillSummary in uncategorizedSkillSummaries" class="skills-list-item  protractor-test-skill-item">
-          <a ng-href="<[getSkillEditorUrl(skillSummary.getId())]>" target="_blank" rel="noopener">
-            <span><[skillSummary.getDescription()]></span>
-          </a>
-          <button class="btn btn-secondary"
-                  ng-click="deleteUncategorizedSkillFromTopic(skillSummary)">
-            Delete
-          </button>
+    <md-card class="item-list-card">
+      <div class="item-list-card-header">
+        <h3>Skills</h3>
+        <i ng-click="toggleListCards(SKILL_LIST)"
+           class="fa fa-angle-down"
+           ng-if="!skillsListIsShown"
+           aria-hidden="true">
+        </i>
+        <i ng-click="toggleListCards(SKILL_LIST)"
+           class="fa fa-angle-up"
+           ng-if="skillsListIsShown"
+           aria-hidden="true">
+        </i>
+      </div>
+      <div ng-if="skillsListIsShown">
+        <button class="btn add-subtopic-btn" ng-click="createSkill()">
+          + ADD SKILL
+        </button>
+        <h4 ng-if="uncategorizedSkillSummaries.length === 0" class="add-entity-text">
+          Click on Add Skill to create a new skill for the topic.
+        </h4>
+        <div ng-if="uncategorizedSkillSummaries.length">
+          <div class="list-header">
+            <span>Name</span>
+          </div>
+          <div ng-repeat="skillSummary in uncategorizedSkillSummaries" class="skills-list-item  protractor-test-skill-item">
+            <a ng-href="<[getSkillEditorUrl(skillSummary.getId())]>" target="_blank" rel="noopener">
+              <span><[skillSummary.getDescription()]></span>
+            </a>
+            <button class="btn btn-secondary"
+                    ng-click="deleteUncategorizedSkillFromTopic(skillSummary)">
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </md-card>
   </div>
   <div class="topic-editor-right">
-    <md-card class="oppia-subtopics-list-card">
-      <h3> Canonical Stories </h3>
-      <button class="btn add-subtopic-btn protractor-test-create-story-button"
-              ng-click="createCanonicalStory()">
-        + ADD STORY
-      </button>
-      <div class="canonical-stories">
-        <stories-list ng-if="topic.getCanonicalStoryIds().length > 0"
-                      story-summaries="canonicalStorySummaries"
-                      topic="topic">
-        </stories-list>
-        <h4 ng-if="topic.getCanonicalStoryIds().length === 0" class="text-secondary">
-          Click on Create Story to create a new canonical story for the topic
-        </h4>
+    <md-card class="item-list-card">
+      <div class="item-list-card-header">
+        <h3>Canonical Stories</h3>
+        <i ng-click="toggleListCards(STORY_LIST)"
+           class="fa fa-angle-down"
+           ng-if="!storiesListIsShown"
+           aria-hidden="true">
+        </i>
+        <i ng-click="toggleListCards(STORY_LIST)"
+           class="fa fa-angle-up"
+           ng-if="storiesListIsShown"
+           aria-hidden="true">
+        </i>
+      </div>
+      <div ng-if="storiesListIsShown">
+        <button class="btn add-subtopic-btn protractor-test-create-story-button"
+                ng-click="createCanonicalStory()">
+          + ADD STORY
+        </button>
+        <div class="canonical-stories">
+          <stories-list ng-if="topic.getCanonicalStoryIds().length > 0"
+                        story-summaries="canonicalStorySummaries"
+                        topic="topic">
+          </stories-list>
+          <h4 ng-if="topic.getCanonicalStoryIds().length === 0" class="text-secondary">
+            Click on Create Story to create a new canonical story for the topic
+          </h4>
+        </div>
       </div>
     </md-card>
     <md-card class="entity-count">
@@ -139,6 +185,8 @@
         <span class="story-count-text">Stories</span>
       </div>
     </md-card>
+  </div>
+  <div>
   </div>
 </div>
 <style>
@@ -167,6 +215,10 @@
   .topic-editor .add-entity-text {
     color: #808080;
     margin-top: 20px;
+  }
+
+  .topic-editor .topic-dashboard-link-mobile {
+    display: none;
   }
 
   .topic-editor .entity-count {
@@ -234,7 +286,7 @@
     width: 30%;
   }
 
-  .oppia-subtopics-list-card {
+  .topic-editor .item-list-card {
     font-family: Roboto, Arial, sans-serif;
     padding: 30px 55px 30px 45px;
   }
@@ -255,5 +307,55 @@
     display: flex;
     justify-content: space-between;
     margin: 7px 0;
+  }
+
+  .topic-editor  .item-list-card-header i {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    .topic-editor {
+      margin-bottom: 15px;
+    }
+
+    .topic-editor .item-list-card {
+      padding: 15px 10px;
+    }
+
+    .topic-editor .item-list-card-header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .topic-editor .item-list-card-header i {
+      display: inline-block;
+      font-size: 25px;
+    }
+
+    .topic-editor .topic-editor-left {
+      width: 100%;
+    }
+
+    .topic-editor .topic-dashboard-link-mobile {
+      display: block;
+      margin-left: 3%;
+    }
+
+    .topic-editor .topic-dashboard-link-desktop {
+      display: none;
+    }
+
+    .topic-editor .topic-editor-right {
+      width: 100%;
+    }
+
+    .topic-editor .entity-count {
+      display: none;
+    }
+
+    .topic-editor .add-subtopic-btn {
+      width: 50%;
+    }
   }
 </style>

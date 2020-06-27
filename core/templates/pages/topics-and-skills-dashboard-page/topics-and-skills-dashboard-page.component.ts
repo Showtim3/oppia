@@ -50,6 +50,7 @@ require(
   'pages/topics-and-skills-dashboard-page/' +
     'topics-and-skills-dashboard-page.constants.ajs.ts');
 require('services/alerts.service.ts');
+require('services/contextual/device-info.service.ts');
 require('services/image-local-storage.service.ts');
 
 
@@ -57,7 +58,7 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
   template: require('./topics-and-skills-dashboard-page.component.html'),
   controller: [
     '$timeout', '$http', '$rootScope', '$scope', '$uibModal', '$window',
-    'AlertsService', 'ContextService', 'ImageLocalStorageService',
+    'AlertsService', 'ContextService', 'DeviceInfoService', 'ImageLocalStorageService',
     'TopicsAndSkillsDashboardFilterObjectFactory',
     'RubricObjectFactory', 'SkillCreationService',
     'SkillObjectFactory', 'TopicCreationService',
@@ -72,7 +73,7 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
     'TOPIC_SORT_OPTIONS', 'TOPIC_PUBLISHED_OPTIONS',
     function(
         $timeout, $http, $rootScope, $scope, $uibModal, $window,
-        AlertsService, ContextService, ImageLocalStorageService,
+        AlertsService, ContextService, DeviceInfoService, ImageLocalStorageService,
         TopicsAndSkillsDashboardFilterObjectFactory,
         RubricObjectFactory, SkillCreationService,
         SkillObjectFactory, TopicCreationService,
@@ -311,6 +312,10 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
         ctrl.applyFilters();
       };
 
+      ctrl.toggleFilterBox = function() {
+        ctrl.filterBoxIsShown = !ctrl.filterBoxIsShown;
+      };
+
       ctrl.refreshPagination = function() {
         ctrl.goToPageNumber(0);
       };
@@ -329,6 +334,7 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
         ctrl.lastSkillPage = 0;
         ctrl.selectedIndex = null;
         ctrl.itemsPerPageChoice = [10, 15, 20];
+        ctrl.filterBoxIsShown = !DeviceInfoService.isMobileDevice();
         ctrl.filterObject = (
           TopicsAndSkillsDashboardFilterObjectFactory.createDefault());
         ctrl.classrooms = [];

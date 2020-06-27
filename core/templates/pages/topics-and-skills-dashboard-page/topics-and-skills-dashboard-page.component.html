@@ -107,6 +107,21 @@
               There are no pending unused skills.
             </p>
           </div>
+          <div class="pagination-mobile">
+            <div ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_TOPICS">
+              <i class="fa fa-angle-left topic-pagination-arrow" ng-click="$ctrl.changePageByOne($ctrl.MOVE_TO_PREV_PAGE)"></i>
+              <span class="dashboard-list-pagination-value"
+                    ng-repeat="n in $ctrl.generateNumbersTillRange($ctrl.currentCount/$ctrl.itemsPerPage) track by $index" ng-click="$ctrl.goToPageNumber($index)">
+                    <span ng-if="$ctrl.pageNumber===$index" class="dashboard-list-pagination-active"><[$index+1]></span>
+                    <span ng-if="$ctrl.pageNumber!==$index"><[$index+1]></span>
+                  </span>
+              <i class="fa fa-angle-right topic-pagination-arrow" ng-click="$ctrl.changePageByOne($ctrl.MOVE_TO_NEXT_PAGE)"></i>
+            </div>
+            <div ng-if="$ctrl.activeTab === $ctrl.TAB_NAME_SKILLS">
+              <button class="btn btn-sm navigation-button" ng-click="$ctrl.navigateSkillPage($ctrl.MOVE_TO_PREV_PAGE)">Prev Page</button>
+              <button class="btn btn-sm navigation-button" ng-click="$ctrl.navigateSkillPage($ctrl.MOVE_TO_NEXT_PAGE)">Next Page</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="dashboard-content-secondary">
@@ -148,6 +163,7 @@
                 </div>
               </div>
             </div>
+
             <div class="topic-skill-filter-row">
               <div class="topic-skill-filter-key">
                 <span>Status</span>
@@ -328,6 +344,9 @@
     display: flex;
     flex-wrap: wrap;
     height: 100%;
+  }
+  .oppia-topics-and-skills-dashboard .pagination-mobile {
+    display: none;
   }
   .oppia-topics-and-skills-dashboard .create-topic-skill i {
     color: #00645C;
@@ -639,6 +658,10 @@
     }
     .oppia-topics-and-skills-dashboard .topic-skill-filter-action-reset {
       margin-top: 10px;
+    }
+    .oppia-topics-and-skills-dashboard .pagination-mobile {
+      display: block;
+      text-align: center;
     }
   }
 </style>

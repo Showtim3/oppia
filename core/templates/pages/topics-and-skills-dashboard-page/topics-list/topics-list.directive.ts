@@ -128,6 +128,10 @@ angular.module('oppia').directive('topicsList', [
             });
           };
 
+          ctrl.toggleEditOptions = function(topicId) {
+            ctrl.selectedIndex = !ctrl.selectedIndex ? topicId : null;
+          };
+
           ctrl.$onInit = function() {
             ctrl.getPageNumber = $scope.getPageNumber;
             ctrl.getItemsPerPage = $scope.getItemsPerPage;

@@ -562,6 +562,7 @@ import { WrittenTranslationObjectFactory } from
   'domain/exploration/WrittenTranslationObjectFactory';
 import { WrittenTranslationsObjectFactory } from
   'domain/exploration/WrittenTranslationsObjectFactory';
+import {BottomNavbarStatusService} from 'domain/bottom_navbar/bottom-navbar-status.service';
 
 @Injectable({
   providedIn: 'root'
@@ -596,6 +597,8 @@ export class UpgradedServices {
     upgradedServices['BackgroundMaskService'] = new BackgroundMaskService();
     upgradedServices['baseInteractionValidationService'] =
       new baseInteractionValidationService();
+    upgradedServices['BottomNavbarStatusService'] = (
+      new BottomNavbarStatusService());
     upgradedServices['BrowserCheckerService'] =
       new BrowserCheckerService(new WindowRef());
     upgradedServices['CamelCaseToHyphensPipe'] = new CamelCaseToHyphensPipe();
