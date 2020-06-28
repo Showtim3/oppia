@@ -39,7 +39,6 @@ require('pages/topic-editor-page/modal-templates/' +
 
 require('services/alerts.service.ts');
 require('services/context.service.ts');
-require('services/contextual/device-info.service.ts');
 require('services/csrf-token.service.ts');
 require('services/contextual/window-dimensions.service.ts');
 require('services/image-upload-helper.service.ts');

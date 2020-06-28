@@ -46,7 +46,7 @@
             </div>
             <div class="navbar-mobile-container" ng-if="$ctrl.isBottomNavbarShown()">
               <i class="fa fa-book show-mobile-navbar-icon" ng-click="$ctrl.toggleMobileNavOptions()"></i>
-              <div class="navbar-mobile" ng-if="$ctrl.mobileNavOptionsAreShown">
+              <div class="navbar-mobile-options" ng-if="$ctrl.mobileNavOptionsAreShown">
                 <div>
                   <div ng-transclude="mobileNavOptions"></div>
                 </div>
@@ -96,7 +96,7 @@
     text-align: right;
     width: 100%;
   }
-  .navbar-mobile {
+  .navbar-mobile-options {
     background-color: #e6e6e6;
     border-top: 1px solid #000000;
   }

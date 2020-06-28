@@ -23,13 +23,20 @@ import { BottomNavbarStatusService } from
 import { WindowDimensionsService } from
   'services/contextual/window-dimensions.service';
 
-describe('SidebarStatusService', () => {
+describe('BottomNavbarStatusService', () => {
   let bss: BottomNavbarStatusService = null;
-  let wds: WindowDimensionsService = null;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [{
+        provide: WindowDimensionsService,
+        useValue: {
+          isWindowNarrow: () => true
+        }
+      }]
+    });
+
     bss = TestBed.get(BottomNavbarStatusService);
-    wds = TestBed.get(WindowDimensionsService);
   });
 
   it('should have bottom navbar disabled by default', () => {
@@ -44,8 +51,6 @@ describe('SidebarStatusService', () => {
   it('should return if the bottom navbar is enabled', () => {
     expect(bss.isBottomNavbarEnabled()).toBe(false);
     bss.markBottomNavbarStatus(true);
-    expect(bss.isBottomNavbarEnabled()).toBe(false);
-    spyOn(wds, 'isWindowNarrow').and.returnValue(true);
     expect(bss.isBottomNavbarEnabled()).toBe(true);
   });
 });

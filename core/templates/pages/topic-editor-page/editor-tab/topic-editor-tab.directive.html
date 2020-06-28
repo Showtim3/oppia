@@ -120,7 +120,7 @@
           <div class="list-header">
             <span>Name</span>
           </div>
-          <div ng-repeat="skillSummary in uncategorizedSkillSummaries" class="skills-list-item  protractor-test-skill-item">
+          <div ng-repeat="skillSummary in uncategorizedSkillSummaries" class="skills-list-item protractor-test-skill-item">
             <a ng-href="<[getSkillEditorUrl(skillSummary.getId())]>" target="_blank" rel="noopener">
               <span><[skillSummary.getDescription()]></span>
             </a>
@@ -224,7 +224,6 @@
   .topic-editor .topic-preview-container button {
     margin: 15px 0;
   }
-
 
   .topic-editor .entity-count {
     align-items: center;

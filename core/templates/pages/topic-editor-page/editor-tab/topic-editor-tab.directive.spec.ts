@@ -70,7 +70,7 @@ describe('Topic editor tab directive', function() {
           entityType,
           entityId) => (entityType + '/' + entityId + '/' + filename)
     };
-    var MockWindowDimensionService = {
+    var MockWindowDimensionsService = {
       isWindowNarrow: () => false
     };
     SkillCreationService = $injector.get('SkillCreationService');

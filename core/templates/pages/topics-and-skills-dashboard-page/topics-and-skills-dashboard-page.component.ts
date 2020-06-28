@@ -16,8 +16,6 @@
  * @fileoverview Controllers for the topics and skills dashboard.
  */
 
-import {WindowDimensionsService} from 'services/contextual/window-dimensions.service';
-
 require('base-components/base-content.directive.ts');
 require(
   'components/common-layout-directives/common-elements/' +
@@ -100,7 +98,6 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
           function(response) {
             ctrl.totalTopicSummaries = response.topic_summary_dicts;
             ctrl.topicSummaries = ctrl.totalTopicSummaries;
-            ctrl.totalTopicSummaries.push;
             ctrl.totalEntityCountToDisplay = ctrl.topicSummaries.length;
             ctrl.currentCount = ctrl.totalEntityCountToDisplay;
             ctrl.activeTab = ctrl.TAB_NAME_TOPICS;

@@ -42,6 +42,7 @@ describe('Topics and Skills Dashboard Page', function() {
   var $q = null;
   var $timeout = null;
   var TopicsAndSkillsDashboardBackendApiService = null;
+  var WindowDimensionsService = null;
   var TopicsAndSkillsDashboardFilterObjectFactory = null;
   var SAMPLE_TOPIC_ID = 'hyuy4GUlvTqJ';
   var AlertsService = null;
@@ -81,6 +82,7 @@ describe('Topics and Skills Dashboard Page', function() {
       $timeout = $injector.get('$timeout');
       $uibModal = $injector.get('$uibModal');
       AlertsService = $injector.get('AlertsService');
+      WindowDimensionsService = $injector.get('WindowDimensionsService');
       $q = $injector.get('$q');
       TopicsAndSkillsDashboardFilterObjectFactory = $injector.get(
         'TopicsAndSkillsDashboardFilterObjectFactory');
@@ -98,10 +100,14 @@ describe('Topics and Skills Dashboard Page', function() {
           return deferred.promise;
         }
       };
+      var MockWindowDimensionsService = {
+        isWindowNarrow: () => false
+      };
       SkillCreationService = $injector.get('SkillCreationService');
 
       ctrl = $componentController('topicsAndSkillsDashboardPage', {
         $scope: $scope,
+        WindowDimensionsService: MockWindowDimensionsService,
         TopicsAndSkillsDashboardBackendApiService:
         MockTopicsAndSkillsDashboardBackendApiService
       });
