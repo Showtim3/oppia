@@ -90,7 +90,7 @@ angular.module('oppia').directive('skillsList', [
                 '/pages/topics-and-skills-dashboard-page/templates/' +
                 'delete-skill-modal.template.html'),
               backdrop: true,
-              windowClass: 'deleteSkillModal',
+              windowClass: 'delete-skill-modal',
               controller: 'ConfirmOrCancelModalController'
             }).result.then(function() {
               SkillBackendApiService.deleteSkill(skillId).then(

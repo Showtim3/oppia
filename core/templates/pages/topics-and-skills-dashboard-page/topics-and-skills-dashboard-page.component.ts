@@ -16,6 +16,8 @@
  * @fileoverview Controllers for the topics and skills dashboard.
  */
 
+import {WindowDimensionsService} from 'services/contextual/window-dimensions.service';
+
 require('base-components/base-content.directive.ts');
 require(
   'components/common-layout-directives/common-elements/' +
@@ -50,7 +52,7 @@ require(
   'pages/topics-and-skills-dashboard-page/' +
     'topics-and-skills-dashboard-page.constants.ajs.ts');
 require('services/alerts.service.ts');
-require('services/contextual/device-info.service.ts');
+require('services/contextual/window-dimensions.service.ts');
 require('services/image-local-storage.service.ts');
 
 
@@ -58,8 +60,8 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
   template: require('./topics-and-skills-dashboard-page.component.html'),
   controller: [
     '$timeout', '$http', '$rootScope', '$scope', '$uibModal', '$window',
-    'AlertsService', 'ContextService', 'DeviceInfoService', 'ImageLocalStorageService',
-    'TopicsAndSkillsDashboardFilterObjectFactory',
+    'AlertsService', 'ContextService', 'WindowDimensionsService',
+    'ImageLocalStorageService', 'TopicsAndSkillsDashboardFilterObjectFactory',
     'RubricObjectFactory', 'SkillCreationService',
     'SkillObjectFactory', 'TopicCreationService',
     'TopicsAndSkillsDashboardBackendApiService',
@@ -73,8 +75,8 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
     'TOPIC_SORT_OPTIONS', 'TOPIC_PUBLISHED_OPTIONS',
     function(
         $timeout, $http, $rootScope, $scope, $uibModal, $window,
-        AlertsService, ContextService, DeviceInfoService, ImageLocalStorageService,
-        TopicsAndSkillsDashboardFilterObjectFactory,
+        AlertsService, ContextService, WindowDimensionsService,
+        ImageLocalStorageService, TopicsAndSkillsDashboardFilterObjectFactory,
         RubricObjectFactory, SkillCreationService,
         SkillObjectFactory, TopicCreationService,
         TopicsAndSkillsDashboardBackendApiService,
@@ -98,10 +100,11 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
           function(response) {
             ctrl.totalTopicSummaries = response.topic_summary_dicts;
             ctrl.topicSummaries = ctrl.totalTopicSummaries;
+            ctrl.totalTopicSummaries.push;
             ctrl.totalEntityCountToDisplay = ctrl.topicSummaries.length;
             ctrl.currentCount = ctrl.totalEntityCountToDisplay;
             ctrl.activeTab = ctrl.TAB_NAME_TOPICS;
-            ctrl.goToPageNumber(0);
+            ctrl.applyFilters();
             ctrl.editableTopicSummaries = (ctrl.topicSummaries.filter(
               function(summary) {
                 return summary.can_edit_topic === true;
@@ -334,7 +337,7 @@ angular.module('oppia').component('topicsAndSkillsDashboardPage', {
         ctrl.lastSkillPage = 0;
         ctrl.selectedIndex = null;
         ctrl.itemsPerPageChoice = [10, 15, 20];
-        ctrl.filterBoxIsShown = !DeviceInfoService.isMobileDevice();
+        ctrl.filterBoxIsShown = !WindowDimensionsService.isWindowNarrow();
         ctrl.filterObject = (
           TopicsAndSkillsDashboardFilterObjectFactory.createDefault());
         ctrl.classrooms = [];

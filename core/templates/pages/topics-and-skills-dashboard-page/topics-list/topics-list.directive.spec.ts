@@ -139,4 +139,20 @@ describe('Topics List Directive', function() {
     expect(alertSpy).toHaveBeenCalledWith(
       'There was an error when deleting the topic.');
   });
+
+  it('should toggle the edit options', function() {
+    spyOn($uibModal, 'open').and.returnValue({
+      result: $q.resolve()
+    });
+    var alertSpy = spyOn(AlertsService, 'addWarning').and.callThrough();
+
+    var topicId = 'CdjnJUE332dd';
+    var url = '/topic_editor_handler/data/CdjnJUE332dd';
+    $httpBackend.expectDELETE(url).respond(400);
+    ctrl.deleteTopic(topicId);
+    $httpBackend.flush();
+
+    expect(alertSpy).toHaveBeenCalledWith(
+      'There was an error when deleting the topic.');
+  });
 });

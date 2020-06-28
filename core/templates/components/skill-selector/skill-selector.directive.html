@@ -4,7 +4,7 @@
       Search By Skill
       <input type="text" class="form-control protractor-test-skill-name-input" placeholder="Enter a skill name" ng-model="skillFilterText" autofocus>
     </md-card>
-    <div class="skill-box">
+    <div class="skill-list-box">
       <md-radio-group ng-model="selectedSkill" ng-change="setSelectedSkillId()">
         <md-card ng-if="!hasUntriagedSkills(topicName)" ng-repeat="(topicName, subtopics) in categorizedSkills" class="list-view-item">
           <md-card layout="row" class="list-view-item">
@@ -62,12 +62,12 @@
   </div>
 </div>
 <style>
-  .skill-selector-parent .skill-box {
+  .skill-selector-parent .skill-list-box {
     max-height: 50vh;
     overflow-y: auto;
   }
   @media screen and (max-width: 768px) {
-    .skill-selector-parent .skill-box {
+    .skill-selector-parent .skill-list-box {
       max-height: initial;
     }
   }

@@ -14,28 +14,31 @@
 
 /**
  * @fileoverview Service for maintaining the open/closed status of the
- * bottom bar..
+ * bottom navigation bar.
  */
 
 import { downgradeInjectable } from '@angular/upgrade/static';
 import { Injectable } from '@angular/core';
-import { DeviceInfoService } from 'services/contextual/device-info.service';
+
+import { WindowDimensionsService } from
+  'services/contextual/window-dimensions.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class BottomNavbarStatusService {
-  constructor(private deviceInfoService: DeviceInfoService) {}
-    private bottomNavbarIsEnabled: boolean = false;
+  constructor(private windowDimensionsService: WindowDimensionsService) {}
+    bottomNavbarIsEnabled: boolean = false;
 
-    markBottomNavbarStatus(status: boolean) {
+    markBottomNavbarStatus(status: boolean): void {
       this.bottomNavbarIsEnabled = status;
     }
 
-    getBottomNavbarStatus() {
+    isBottomNavbarEnabled(): boolean {
       return (
-        this.bottomNavbarIsEnabled && this.deviceInfoService.isMobileDevice());
+        this.bottomNavbarIsEnabled &&
+          this.windowDimensionsService.isWindowNarrow());
     }
 }
 

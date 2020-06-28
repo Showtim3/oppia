@@ -52,8 +52,8 @@
     </button>
   </li>
 </ul>
-<div class="nav-mobile">
-  <div class="navbar-mobile-tabs">
+<div class="topic-nav-mobile">
+  <div class="topic-navbar-mobile-tabs">
     <div class="save-change-btn-container">
       <button class="btn btn-save-changes"
               ng-click="saveChanges()">
@@ -103,17 +103,17 @@
     font-size: 1.4em;
     margin-left: 0.3vw;
   }
-  topic-editor-navbar .nav-mobile {
+  topic-editor-navbar .topic-nav-mobile {
     display: none;
   }
   @media screen and (max-width: 768px) {
     topic-editor-navbar .navbar-desktop {
       display: none;
     }
-    topic-editor-navbar .nav-mobile {
+    topic-editor-navbar .topic-nav-mobile {
       display: block;
     }
-    topic-editor-navbar .navbar-mobile-tabs {
+    topic-editor-navbar .topic-navbar-mobile-tabs {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-evenly;
@@ -135,8 +135,8 @@
       bottom: 47px;
       color: #FFFFFF;
       font-weight: bold;
-      position: absolute;
       left: 12px;
+      position: absolute;
       width: 144px;
     }
     topic-editor-navbar .btn-publish-topic {

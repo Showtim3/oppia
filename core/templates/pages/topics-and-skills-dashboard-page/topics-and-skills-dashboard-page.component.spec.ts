@@ -146,6 +146,15 @@ describe('Topics and Skills Dashboard Page', function() {
       expect(ctrl.activeTab).toEqual('topics');
     });
 
+    it('should toggle the filter box visibility', function() {
+      expect(ctrl.filterBoxIsShown).toEqual(true);
+      ctrl.toggleFilterBox();
+      expect(ctrl.filterBoxIsShown).toEqual(false);
+      ctrl.toggleFilterBox();
+      expect(ctrl.filterBoxIsShown).toEqual(true);
+      ctrl.toggleFilterBox();
+      expect(ctrl.filterBoxIsShown).toEqual(false);
+    });
     it('should go to Page Number', function() {
       expect(ctrl.topicPageNumber).toEqual(0);
       expect(ctrl.pageNumber).toEqual(0);

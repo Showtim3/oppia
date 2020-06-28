@@ -23,11 +23,12 @@
       <td>
         <[$ctrl.getSerialNumberForTopic($index)]>.
       </td>
-      <td>
+      <td class="topic-primary-information-container">
         <div class="list-summary list-summary-name protractor-test-topics-list-item">
           <div>
             <a class="topic-name protractor-test-topic-name"
-               ng-href="<[$ctrl.getTopicEditorUrl(topic.id)]>"><[topic.name]>
+               ng-href="<[$ctrl.getTopicEditorUrl(topic.id)]>">
+              <[topic.name]>
             </a>
           </div>
           <div>
@@ -97,7 +98,7 @@
             </div>
           </div>
           <div class="topic-item-options">
-            <p class="fas fa-ellipsis-v topic-edit-box-icon" ng-click="$ctrl.toggleEditOptions(topic.id)"></p>
+            <p class="fas fa-ellipsis-v topic-edit-box-icon" ng-click="$ctrl.enableEditOptions(topic.id)"></p>
             <div ng-if="$ctrl.showEditOptions(topic.id)" class="topic-edit-options" ng-mouseleave="$ctrl.enableEditOptions(null)">
               <a class="topic-edit-options-edit" ng-href="<[$ctrl.getTopicEditorUrl(topic.id)]>">
                 <i class="fa fa-pen"></i>
@@ -205,6 +206,9 @@
     text-align: left;
     text-decoration: none;
     width: 100%;
+  }
+  topics-list .topic-primary-information-container {
+    overflow: auto;
   }
   topics-list .topic-edit-options-edit {
     border-bottom: 1px solid black;

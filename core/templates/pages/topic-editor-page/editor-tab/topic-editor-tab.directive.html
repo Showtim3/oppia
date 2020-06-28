@@ -1,12 +1,11 @@
 <div role="form" class="form-horizontal topic-editor">
-    <div class="topic-editor-left">
-    <a ng-href="/topics-and-skills-dashboard" class="topic-dashboard-link-desktop">
-      <button class="btn btn-secondary">Back to Topics Dashboard</button>
-    </a>
-      <a href="/topics-and-skills-dashboard" class="topic-dashboard-link-mobile">
-        <i class="fa fa-angle-left"></i>
-        Back to Topics Dashboard
+  <div class="topic-editor-left">
+    <p class="topic-dashboard-link">
+      <a href="/topics-and-skills-dashboard">
+        Back to Topics Dashboard <i class="fa fa-angle-left"></i>
       </a>
+      <span><[editableName]></span>
+    </p>
     <md-card class="item-list-card oppia-long-text">
       <label class="form-heading">Topic Thumbnail</label>
       <thumbnail-uploader disabled="!topicRights.canEditTopic()"
@@ -48,7 +47,7 @@
             Topic description should be at most <[MAX_CHARS_IN_TOPIC_DESCRIPTION]> characters.
           </i>
         </span>
-        <div>
+        <div class="topic-preview-container">
           <button class="btn btn-secondary" ng-click="togglePreview()">Show/Hide Preview</button>
           <div ng-if="topic.getId() && topicPreviewCardIsShown">
             <preview-thumbnail name="editableName"
@@ -68,12 +67,12 @@
     <md-card class="item-list-card">
       <div class="item-list-card-header">
         <h3>Subtopics</h3>
-        <i ng-click="toggleListCards(SUBTOPIC_LIST)"
+        <i ng-click="togglePreviewListCards(SUBTOPIC_LIST)"
            class="fa fa-angle-down"
            ng-if="!subtopicsListIsShown"
            aria-hidden="true">
         </i>
-        <i ng-click="toggleListCards(SUBTOPIC_LIST)"
+        <i ng-click="togglePreviewListCards(SUBTOPIC_LIST)"
            class="fa fa-angle-up"
            ng-if="subtopicsListIsShown"
            aria-hidden="true">
@@ -83,9 +82,6 @@
         <button class="btn add-subtopic-btn protractor-test-add-subtopic-button" ng-click="createSubtopic()">
           + ADD SUBTOPIC
         </button>
-        <h4 ng-if="subtopics.length === 0" class="add-entity-text">
-          Click on Add Subtopic to create a new subtopic for the topic.
-        </h4>
         <div ng-if="subtopics.length && subtopicsListIsShown">
           <div class="list-header">
             <span>Name</span>
@@ -105,24 +101,21 @@
     <md-card class="item-list-card">
       <div class="item-list-card-header">
         <h3>Skills</h3>
-        <i ng-click="toggleListCards(SKILL_LIST)"
+        <i ng-click="togglePreviewListCards(SKILL_LIST)"
            class="fa fa-angle-down"
            ng-if="!skillsListIsShown"
            aria-hidden="true">
         </i>
-        <i ng-click="toggleListCards(SKILL_LIST)"
+        <i ng-click="togglePreviewListCards(SKILL_LIST)"
            class="fa fa-angle-up"
            ng-if="skillsListIsShown"
            aria-hidden="true">
         </i>
       </div>
       <div ng-if="skillsListIsShown">
-        <button class="btn add-subtopic-btn" ng-click="createSkill()">
+        <button class="btn add-skill-btn" ng-click="createSkill()">
           + ADD SKILL
         </button>
-        <h4 ng-if="uncategorizedSkillSummaries.length === 0" class="add-entity-text">
-          Click on Add Skill to create a new skill for the topic.
-        </h4>
         <div ng-if="uncategorizedSkillSummaries.length">
           <div class="list-header">
             <span>Name</span>
@@ -144,19 +137,19 @@
     <md-card class="item-list-card">
       <div class="item-list-card-header">
         <h3>Canonical Stories</h3>
-        <i ng-click="toggleListCards(STORY_LIST)"
+        <i ng-click="togglePreviewListCards(STORY_LIST)"
            class="fa fa-angle-down"
            ng-if="!storiesListIsShown"
            aria-hidden="true">
         </i>
-        <i ng-click="toggleListCards(STORY_LIST)"
+        <i ng-click="togglePreviewListCards(STORY_LIST)"
            class="fa fa-angle-up"
            ng-if="storiesListIsShown"
            aria-hidden="true">
         </i>
       </div>
       <div ng-if="storiesListIsShown">
-        <button class="btn add-subtopic-btn protractor-test-create-story-button"
+        <button class="btn add-story-btn protractor-test-create-story-button"
                 ng-click="createCanonicalStory()">
           + ADD STORY
         </button>
@@ -165,9 +158,6 @@
                         story-summaries="canonicalStorySummaries"
                         topic="topic">
           </stories-list>
-          <h4 ng-if="topic.getCanonicalStoryIds().length === 0" class="text-secondary">
-            Click on Create Story to create a new canonical story for the topic
-          </h4>
         </div>
       </div>
     </md-card>
@@ -209,6 +199,7 @@
   }
 
   .topic-editor .topic-editor-right {
+    margin-top: 34px;
     width: 35%;
   }
 
@@ -217,9 +208,23 @@
     margin-top: 20px;
   }
 
-  .topic-editor .topic-dashboard-link-mobile {
-    display: none;
+  .topic-editor .topic-dashboard-link {
+    font-weight: bold;
   }
+
+  .topic-editor .topic-dashboard-link a {
+    margin-left: 1%;
+    text-decoration: none;
+  }
+
+  .topic-editor .topic-preview-container {
+    text-align: center;
+  }
+
+  .topic-editor .topic-preview-container button {
+    margin: 15px 0;
+  }
+
 
   .topic-editor .entity-count {
     align-items: center;
@@ -228,8 +233,7 @@
     flex-wrap: wrap;
     height: 100px;
     justify-content: center;
-    margin: 30px auto 0;
-    width: 80%;
+    margin: 30px 8px 0;
   }
 
   .topic-editor .subtopic-count,
@@ -280,10 +284,24 @@
     height: 10vh;
   }
 
-  .topic-editor .add-subtopic-btn {
+  .topic-editor .add-subtopic-btn,
+  .topic-editor .add-skill-btn,
+  .topic-editor .add-story-btn {
     background-color: #008098;
     color: #FFFFFF;
-    width: 30%;
+    text-align: left;
+  }
+
+  .topic-editor .add-subtopic-btn {
+    width: 140px;
+  }
+
+  .topic-editor .add-skill-btn {
+    width: 120px;
+  }
+
+  .topic-editor .add-story-btn {
+    width: 120px;
   }
 
   .topic-editor .item-list-card {
@@ -313,6 +331,28 @@
     display: none;
   }
 
+  @media screen and (max-width: 1200px) {
+    .topic-editor .topic-editor-left {
+      width: 50%;
+    }
+
+    .topic-editor .topic-editor-right {
+      margin-top: 34px;
+      width: 40%;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .topic-editor .topic-editor-left {
+      width: 55%;
+    }
+
+    .topic-editor .topic-editor-right {
+      margin-top: 34px;
+      width: 45%;
+    }
+  }
+
   @media screen and (max-width: 768px) {
     .topic-editor {
       margin-bottom: 15px;
@@ -337,21 +377,8 @@
       width: 100%;
     }
 
-    .topic-editor .topic-dashboard-link-mobile {
-      display: block;
-      margin-left: 3%;
-    }
-
-    .topic-editor .topic-dashboard-link-desktop {
-      display: none;
-    }
-
     .topic-editor .topic-editor-right {
       width: 100%;
-    }
-
-    .topic-editor .entity-count {
-      display: none;
     }
 
     .topic-editor .add-subtopic-btn {

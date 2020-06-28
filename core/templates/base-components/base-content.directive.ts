@@ -64,7 +64,6 @@ angular.module('oppia').directive('baseContent', [
           ctrl.isSidebarShown = () => SidebarStatusService.isSidebarShown();
           ctrl.closeSidebarOnSwipe = () => SidebarStatusService.closeSidebar();
           ctrl.toggleMobileNavOptions = () => {
-            console.log('Toggle called');
             ctrl.mobileNavOptionsAreShown = !ctrl.mobileNavOptionsAreShown;
           };
           ctrl.isBackgroundMaskActive = () => (
@@ -84,7 +83,7 @@ angular.module('oppia').directive('baseContent', [
             ctrl.iframed = UrlService.isIframed();
 
             ctrl.isBottomNavbarShown = () => {
-              return BottomNavbarStatusService.getBottomNavbarStatus();
+              return BottomNavbarStatusService.isBottomNavbarEnabled();
             };
 
             ctrl.DEV_MODE = $rootScope.DEV_MODE;

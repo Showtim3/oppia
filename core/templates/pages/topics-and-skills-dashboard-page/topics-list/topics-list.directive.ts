@@ -108,7 +108,7 @@ angular.module('oppia').directive('topicsList', [
                   return topicName;
                 }
               },
-              windowClass: 'deleteTopicModal',
+              windowClass: 'delete-topic-modal',
               controller: 'DeleteTopicModalController'
             }).result.then(function() {
               EditableTopicBackendApiService.deleteTopic(topicId).then(
@@ -126,10 +126,6 @@ angular.module('oppia').directive('topicsList', [
               // This callback is triggered when the Cancel button is clicked.
               // No further action is needed.
             });
-          };
-
-          ctrl.toggleEditOptions = function(topicId) {
-            ctrl.selectedIndex = !ctrl.selectedIndex ? topicId : null;
           };
 
           ctrl.$onInit = function() {
