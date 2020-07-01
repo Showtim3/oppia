@@ -111,6 +111,7 @@ angular.module('oppia').factory('QuestionCreationService', [
       skill = SkillEditorStateService.getSkill();
       skillId = SkillEditorStateService.getSkill().getId();
       skillIdToRubricsObject[skillId] = skill.getRubrics();
+
       newQuestionSkillIds = [skillId];
       var currentMode = MODE_SELECT_DIFFICULTY;
 

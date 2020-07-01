@@ -205,20 +205,12 @@ angular.module('oppia').directive('skillsList', [
             return (skillSerialNumber + 1);
           };
 
-          ctrl.changeEditOptions = function(skillId) {
-            ctrl.selectedIndex = ctrl.selectedIndex ? null : skillId;
-          };
-
-          ctrl.showEditOptions = function(skillId) {
-            return ctrl.selectedIndex === skillId;
-          };
-
           ctrl.$onInit = function() {
             ctrl.getPageNumber = $scope.getPageNumber;
             ctrl.getItemsPerPage = $scope.getItemsPerPage;
             ctrl.SKILL_HEADINGS = [
               'index', 'description', 'worked_examples_count',
-              'misconception_count', 'status'];
+              'misconception_count', 'status', 'options'];
           };
         }
       ]
