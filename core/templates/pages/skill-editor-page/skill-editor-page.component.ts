@@ -40,11 +40,11 @@ require('services/bottom-navbar-status.service.ts');
 angular.module('oppia').component('skillEditorPage', {
   template: require('./skill-editor-page.component.html'),
   controller: [
-    '$uibModal', 'BottomNavbarStatusService',
+    '$uibModal', '$window', 'BottomNavbarStatusService',
     'SkillEditorRoutingService', 'SkillEditorStateService',
     'UndoRedoService', 'UrlInterpolationService', 'UrlService',
     function(
-        $uibModal, BottomNavbarStatusService,
+        $uibModal, $window, BottomNavbarStatusService,
         SkillEditorRoutingService, SkillEditorStateService,
         UndoRedoService, UrlInterpolationService, UrlService) {
       var ctrl = this;
@@ -82,6 +82,14 @@ angular.module('oppia').component('skillEditorPage', {
       ctrl.getWarningsCount = function() {
         return ctrl.skill.getValidationIssues().length;
       };
+
+      $window.addEventListener('beforeunload', function(e) {
+        if (UndoRedoService.getChangeCount() > 0) {
+          e.returnValue = (
+            'There are unsaved changes. Are you sure you want to leave?');
+        }
+      });
+
       ctrl.$onInit = function() {
         BottomNavbarStatusService.markBottomNavbarStatus(true);
         SkillEditorStateService.loadSkill(UrlService.getSkillIdFromUrl());
