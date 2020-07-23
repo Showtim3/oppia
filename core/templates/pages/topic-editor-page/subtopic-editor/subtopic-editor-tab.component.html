@@ -41,7 +41,7 @@
             </div>
             <span class="oppia-input-box-subtitle">
               <i>
-                Gives learner a brief overview of how to perform a skill.
+                Gives learner an overview of how to perform a skill. Go to the preview tab to preview.
               </i>
             </span>
             <div class="text-right" ng-if="$ctrl.schemaEditorIsShown">
@@ -53,7 +53,7 @@
               </button>
             </div>
             <div ng-if="!$ctrl.schemaEditorIsShown" ng-click="$ctrl.showSchemaEditor()" class="protractor-test-edit-html-content">
-              <angular-html-bind html-data="$ctrl.htmlData" class="protractor-test-subtopic-html-content">
+              <angular-html-bind html-data="$ctrl.htmlData" class="subtopic-html-content protractor-test-subtopic-html-content">
               </angular-html-bind>
             </div>
           </div>
@@ -72,24 +72,26 @@
             </thumbnail-uploader>
           </div>
         </div>
-        <div ng-if="!$ctrl.subtopicPreviewCardIsShown" >
-          <button class="btn btn-default show-subtopic-preview-button" ng-click="$ctrl.toggleSubtopicPreview()">
-            Preview Topic Card
-            <i class="fa fa-angle-down"></i>
-          </button>
-        </div>
-        <div ng-if="$ctrl.subtopicPreviewCardIsShown">
-          <button class="btn btn-default show-subtopic-preview-button" ng-click="$ctrl.toggleSubtopicPreview()">
-            Collapse Topic Card
-            <i class="fa fa-angle-up"></i>
-          </button>
-        </div>
-        <div ng-if="$ctrl.subtopicPreviewCardIsShown">
-          <preview-thumbnail name="$ctrl.editableTitle"
-                             filename = "$ctrl.editableThumbnailFilename"
-                             thumbnail-bg-color="$ctrl.editableThumbnailBgColor"
-                             bg-color="'#2F6687'">
-          </preview-thumbnail>
+        <div ng-if="$ctrl.editableThumbnailFilename">
+          <div ng-if="!$ctrl.subtopicPreviewCardIsShown" >
+            <button class="btn btn-default show-subtopic-preview-button" ng-click="$ctrl.toggleSubtopicPreview()">
+              Preview Subtopic Card
+              <i class="fa fa-angle-down"></i>
+            </button>
+          </div>
+          <div ng-if="$ctrl.subtopicPreviewCardIsShown">
+            <button class="btn btn-default show-subtopic-preview-button" ng-click="$ctrl.toggleSubtopicPreview()">
+              Collapse Subopic Card
+              <i class="fa fa-angle-up"></i>
+            </button>
+          </div>
+          <div ng-if="$ctrl.subtopicPreviewCardIsShown">
+            <preview-thumbnail name="$ctrl.editableTitle"
+                               filename = "$ctrl.editableThumbnailFilename"
+                               thumbnail-bg-color="$ctrl.editableThumbnailBgColor"
+                               bg-color="'#2F6687'">
+            </preview-thumbnail>
+          </div>
         </div>
       </md-card>
       <md-card class="oppia-subtopics-list-card subtopic-skill-card subtopic-item-container">
@@ -282,6 +284,8 @@
     flex-wrap: wrap;
     height: 110px;
     justify-content: center;
+    position: fixed;
+    width: 25%;
   }
   .subtopic-content .skill-count,
   .subtopic-content .question-count,
@@ -324,6 +328,11 @@
   }
   .subtopic-content .subtopic-item-container {
       border-radius: 4px;
+  }
+  .subtopic-content .subtopic-html-content p {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 6px 12px 6px 12px;
   }
   @media screen and (max-width: 1100px) {
     .subtopic-content .subtopic-left-box {
