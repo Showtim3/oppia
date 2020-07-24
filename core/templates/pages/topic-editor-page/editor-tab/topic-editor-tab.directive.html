@@ -54,13 +54,13 @@
       <div ng-if="topic.getThumbnailFilename()">
         <div ng-if="!topicPreviewCardIsShown" >
           <button class="btn btn-default show-topic-preview-button" ng-click="togglePreview()">
-            Preview Topic Card
+            Expand Preview
             <i class="fa fa-angle-down"></i>
           </button>
         </div>
         <div ng-if="topicPreviewCardIsShown">
           <button class="btn btn-default show-topic-preview-button" ng-click="togglePreview()">
-            Collapse Topic Card
+            Collapse Preview
             <i class="fa fa-angle-up"></i>
           </button>
         </div>
@@ -75,7 +75,7 @@
       </div>
       </div>
     </md-card>
-    <md-card class="item-list-card">
+    <md-card class="item-list-card subtopic-skill-card-container">
       <div class="item-list-card-header">
         <div class="subtopic-reassign-header">
           <h3>Subtopics</h3>
@@ -364,6 +364,7 @@
   .topic-editor .add-story-btn {
     background-color: #008098;
     color: #FFFFFF;
+    font-weight: bold;
     text-align: left;
   }
 
@@ -507,6 +508,10 @@
     display: none;
   }
 
+  .topic-editor .subtopic-skill-card-container {
+    margin-top: 64px;
+  }
+
   @media screen and (max-width: 1200px) {
     .topic-editor .topic-content-container {
       width: 50%;
@@ -555,6 +560,10 @@
     .topic-editor .topic-content-container {
       margin-top: 30px;
       width: 100%;
+    }
+
+    .topic-editor .subtopic-skill-card-container {
+      margin-top: 16px;
     }
 
     .topic-editor .subtopic-reassign-header {
