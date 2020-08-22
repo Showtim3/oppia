@@ -52,7 +52,7 @@ import { CsrfTokenService } from 'services/csrf-token.service';
 import { DateTimeFormatService } from 'services/date-time-format.service';
 import { WindowRef } from 'services/contextual/window-ref.service';
 
-describe('History tab component', function() {
+fdescribe('History tab component', function() {
   var ctrl = null;
   var $httpBackend = null;
   var $q = null;
